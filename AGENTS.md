@@ -7,8 +7,8 @@ A PlayCanvas app in TypeScript, built with Vite. The scene is declared in HTML w
 - `pnpm install` installs dependencies.
 - `pnpm run dev` starts the dev server, usually at <http://localhost:5173>, with hot reload and the PlayCanvas Inspector.
 - `pnpm run typecheck` checks types.
-- `pnpm run lint` runs ESLint, and `pnpm run lint:fix` fixes what it can.
-- `pnpm run fmt` checks formatting, and `pnpm run fmt:fix` applies Prettier.
+- `pnpm run lint` runs the linter (Oxlint, via Vite+), and `pnpm run lint:fix` fixes what it can.
+- `pnpm run fmt` checks formatting, and `pnpm run fmt:fix` applies the formatter (Oxfmt, via Vite+).
 - `pnpm run build` builds the production site into `dist/`, and `pnpm run start` serves it.
 - `pnpm run dev` and `pnpm run start` open the page in the default browser.
 
