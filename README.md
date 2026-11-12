@@ -1,6 +1,6 @@
 # PlayCanvas Web Components + TypeScript Starter
 
-A Vite-powered `@playcanvas/web-components` project with TypeScript, ESLint and Prettier. The scene is
+A [Vite+](https://viteplus.dev)-powered `@playcanvas/web-components` project with TypeScript, Oxlint and Oxfmt. The scene is
 declared as HTML custom elements in `index.html`.
 
 ## Spinning Cube
@@ -37,7 +37,7 @@ Run these with `pnpm run <script>`:
 | `dev`       | Start the Vite development server and open the app |
 | `build`     | Build for production                               |
 | `start`     | Preview the production build and open the app      |
-| `lint`      | Run ESLint                                         |
+| `lint`      | Run the linter (Oxlint)                            |
 | `fmt`       | Check formatting                                   |
 | `typecheck` | Run TypeScript checks                              |
 
