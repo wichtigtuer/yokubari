@@ -1,0 +1,143 @@
+{
+  "version": 2,
+  "skills": {
+    "add-effects": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/add-effects/SKILL.md",
+      "computedHash": "70c7bf47bf973aed29434a0de929586cc3dddace00f5ca1f9ad81ae8b77d52f0"
+    },
+    "apply-conventions": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/apply-conventions/SKILL.md",
+      "computedHash": "bdcacc39b7ca2b488c94ab3eacd868e3340b150d0ccecb4ecd75b7b5db143491"
+    },
+    "assemble-scene": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/assemble-scene/SKILL.md",
+      "computedHash": "8924ffffbdf65e84941a0bb8f8d14adab61b88b01cce3b9f349c960b94970804"
+    },
+    "bake-lighting": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/bake-lighting/SKILL.md",
+      "computedHash": "10604300c4f062e2f598aca2a9b9d520212e4ab5194b183b6f599d38b3857d17"
+    },
+    "build-app": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/build-app/SKILL.md",
+      "computedHash": "abba09f3f0a6b24900746a4fe20280ade025d2abf64252225e80b802fc8481ba"
+    },
+    "calibrate-model": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/calibrate-model/SKILL.md",
+      "computedHash": "fe2fd64c7deca599b302a4bb6dd88370c3ffc5ac3bf8cd217be5b42c59038fcb"
+    },
+    "configure-animation": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/configure-animation/SKILL.md",
+      "computedHash": "5d3ea3ea88c6676872082bfa68dd6c8e87dab6023cb37cfd856295e1fba759ed"
+    },
+    "find-examples": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-examples/SKILL.md",
+      "computedHash": "8a53d91f116a40e998fd3c1740a701641f506fcc9e979e86e681d3701d805f65"
+    },
+    "inspect-glb": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/inspect-glb/SKILL.md",
+      "computedHash": "879e9ae3b969c8c3ba75f6cad9ba98fc596be7ab9dae4b598ca453a4d74a4198"
+    },
+    "inspect-runtime": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/inspect-runtime/SKILL.md",
+      "computedHash": "99a30efedd46f4e6fd60c2ed5c02a6cb9e5d472fa96a00d8c0537bd9d8ece732"
+    },
+    "light-scene": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/light-scene/SKILL.md",
+      "computedHash": "8d583699f938d601103106565b340c17eaccb1ca3c6dea96229b549d14e26add"
+    },
+    "load-assets": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/load-assets/SKILL.md",
+      "computedHash": "ae4e663f83519e144b7c23506dc98ba0eb987f8741e88043b293197a5ca5fa28"
+    },
+    "modern-css": {
+      "source": "wichtigtuer/skills",
+      "sourceType": "github",
+      "skillPath": "skills/modern-css/SKILL.md",
+      "computedHash": "38a136deebff1b0e4ee5e61a7d37078d56ae6462e41b7562a5d32c6e60d13115"
+    },
+    "node-native-tests": {
+      "source": "wichtigtuer/skills",
+      "sourceType": "github",
+      "skillPath": "skills/node-native-tests/SKILL.md",
+      "computedHash": "85482ffb2a4875e31ee19af6df648c67cf6af251ab2624564f0d0030a618f8b7"
+    },
+    "override-shader-chunks": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/override-shader-chunks/SKILL.md",
+      "computedHash": "7e6840ad529cc44c7b50095531be8941fcdb168ec640f93f46f3a29d11da48e2"
+    },
+    "reduce-draw-calls": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/reduce-draw-calls/SKILL.md",
+      "computedHash": "9028692e0768da8275999f1fedad2e2b1e0212cc8b744ad642bb50d7f4ad83bf"
+    },
+    "reuse-scripts": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/reuse-scripts/SKILL.md",
+      "computedHash": "12584072dbbb4e84a531ae968d974c8c7f0c5b6194b94ea54ff2cae912ebb3a6"
+    },
+    "review-architecture-docs": {
+      "source": "wichtigtuer/skills",
+      "sourceType": "github",
+      "skillPath": "skills/review-architecture-docs/SKILL.md",
+      "computedHash": "fcde4c5cfcf3073d120edcc350bd7a78263b83e4c411d1d5486402c392468c7c"
+    },
+    "review-function": {
+      "source": "wichtigtuer/skills",
+      "sourceType": "github",
+      "skillPath": "skills/review-function/SKILL.md",
+      "computedHash": "c052ff26debc0a1bb31621318acfd42dd3c588137b34d51ca38d675ed80194d3"
+    },
+    "sdte-loop": {
+      "source": "wichtigtuer/skills",
+      "sourceType": "github",
+      "skillPath": "skills/sdte-loop/SKILL.md",
+      "computedHash": "b6432cfec8b8693d25828f7b4dea8ec59f81852c8a10b89d5a416d6c9bdda07e"
+    },
+    "verify-pixels": {
+      "source": "playcanvas/skills",
+      "sourceType": "github",
+      "skillPath": "skills/verify-pixels/SKILL.md",
+      "computedHash": "c41884f91d109c96e45c5e249c906e10659b5b6352533251ba8f9914661d96b6"
+    },
+    "web-components": {
+      "source": "wichtigtuer/skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-components/SKILL.md",
+      "computedHash": "e9134ec22df30dca0adb931deeefd926df9549d2cfbf4cb4d8d7f1889c0fc019"
+    },
+    "web-security": {
+      "source": "wichtigtuer/skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-security/SKILL.md",
+      "computedHash": "33aa4ce5c3ee825e0b929c8c89b72631bf4c7bbe2a4159c6b495e5b3bace7a0f"
+    }
+  }
+}
