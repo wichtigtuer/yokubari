@@ -6,6 +6,21 @@ settings:
 
 catalogs:
   default:
+    '@playcanvas/inspector':
+      specifier: 0.5.0
+      version: 0.5.0
+    '@playcanvas/web-components':
+      specifier: 0.30.0
+      version: 0.30.0
+    playcanvas:
+      specifier: 2.24.0
+      version: 2.24.0
+    skills:
+      specifier: 1.8.1
+      version: 1.8.1
+    typescript:
+      specifier: 6.0.3
+      version: 6.0.3
     vite:
       specifier: npm:@voidzero-dev/vite-plus-core@1.6.0
       version: 1.6.0
@@ -21,20 +36,20 @@ importers:
   .:
     dependencies:
       '@playcanvas/web-components':
-        specifier: ^0.30.0
+        specifier: 'catalog:'
         version: 0.30.0(playcanvas@2.24.0)
       playcanvas:
-        specifier: ^2.24.0
+        specifier: 'catalog:'
         version: 2.24.0
-      skills:
-        specifier: ^1.8.1
-        version: 1.8.1
     devDependencies:
       '@playcanvas/inspector':
-        specifier: ^0.5.0
+        specifier: 'catalog:'
         version: 0.5.0(playcanvas@2.24.0)
+      skills:
+        specifier: 'catalog:'
+        version: 1.8.1
       typescript:
-        specifier: ~6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
       vite:
         specifier: 'catalog:'

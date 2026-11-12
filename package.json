@@ -16,13 +16,13 @@
         "prepare": "vp config"
     },
     "dependencies": {
-        "@playcanvas/web-components": "^0.30.0",
-        "playcanvas": "^2.24.0",
-        "skills": "^1.8.1"
+        "@playcanvas/web-components": "catalog:",
+        "playcanvas": "catalog:"
     },
     "devDependencies": {
-        "@playcanvas/inspector": "^0.5.0",
-        "typescript": "~6.0.3",
+        "@playcanvas/inspector": "catalog:",
+        "skills": "catalog:",
+        "typescript": "catalog:",
         "vite": "catalog:",
         "vite-plus": "catalog:"
     },
