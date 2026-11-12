@@ -11,6 +11,8 @@ type Hook = {
 
 // Every app announces itself to this hook as it starts, whichever format created it
 const KEY = Symbol.for('playcanvas.inspector');
+// Keep a hook installed earlier, such as a devtools extension's. Assertion through unknown.
+// eslint-disable-next-line typescript/no-unsafe-type-assertion
 const scope = globalThis as unknown as Record<symbol, Hook | undefined>;
 // Keep a hook installed earlier, such as a devtools extension's
 const prev = scope[KEY];

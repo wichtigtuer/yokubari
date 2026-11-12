@@ -82,8 +82,6 @@ export default defineConfig({
                     SuppressedError: 'readonly'
                 },
                 rules: {
-                    // 🚫 Side-effect imports (CSS) are idiomatic in Vite apps
-                    'import/no-unassigned-import': 'off',
                     // Allow `import type` next to a value import of the same module
                     'no-duplicate-imports': ['error', { allowSeparateTypeImports: true }],
                     // Separate declarations read better than one merged `const` per scope
@@ -91,9 +89,19 @@ export default defineConfig({
                     'typescript/consistent-type-imports': 'error',
                     'typescript/no-dynamic-delete': 'off',
                     'typescript/no-non-null-assertion': 'off',
-                    // 🚫 Narrowing globalThis to the hook record needs an assertion through unknown
-                    'typescript/no-unsafe-type-assertion': 'off',
-                    'typescript/prefer-for-of': 'off',
+                    'typescript/prefer-for-of': 'off'
+                }
+            },
+            {
+                files: ['src/main.ts', 'src/inspector.ts'],
+                rules: {
+                    // 🚫 Side-effect imports (CSS) are idiomatic in Vite apps
+                    'import/no-unassigned-import': 'off'
+                }
+            },
+            {
+                files: ['src/inspector.ts'],
+                rules: {
                     // 🚫 Class instances (AppBase, Entity) cannot be expressed as readonly types
                     'typescript/prefer-readonly-parameter-types': 'off'
                 }
@@ -287,7 +295,5 @@ export default defineConfig({
             ]
         }
     ]),
-    staged: {
-        '*': 'vp check --fix'
-    }
+    staged: { '*': 'vp check --fix' }
 });
