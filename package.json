@@ -27,6 +27,6 @@
         "vite-plus": "catalog:"
     },
     "engines": {
-        "node": ">=22.23.2"
+        "node": ">=26.13.0"
     }
 }
