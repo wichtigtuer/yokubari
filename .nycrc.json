@@ -1,0 +1,10 @@
+{
+    "all": false,
+    "exclude": ["src/inspector.ts", "**/*.d.ts", "**/*.test.ts", "e2e/**"],
+    "exclude-after-remap": true,
+    "extension": [".ts"],
+    "include": ["src/**/*.ts"],
+    "report-dir": "coverage/e2e",
+    "reporter": ["text", "html", "json-summary"],
+    "temp-dir": ".nyc_output"
+}

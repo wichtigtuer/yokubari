@@ -6,6 +6,8 @@
     "type": "module",
     "scripts": {
         "build": "vp build",
+        "coverage:e2e:prune": "rimraf .nyc_output coverage/e2e",
+        "coverage:e2e:report": "nyc report",
         "dev": "vp dev --open",
         "fmt": "vp fmt --check .",
         "fmt:fix": "vp fmt .",
@@ -13,6 +15,9 @@
         "lint:fix": "vp lint . --fix",
         "start": "vp preview --open",
         "test": "vp test run",
+        "test:e2e": "playwright test",
+        "test:e2e:coverage": "pnpm run coverage:e2e:prune && pnpm run test:e2e && pnpm run coverage:e2e:report",
+        "test:e2e:update-snapshots": "pnpm run test:e2e --update-snapshots=all",
         "typecheck": "tsc --noEmit",
         "prepare": "vp config"
     },
@@ -22,12 +27,17 @@
     },
     "devDependencies": {
         "@playcanvas/inspector": "catalog:",
+        "@playwright/test": "catalog:",
+        "@types/node": "catalog:",
         "@vitest/browser-playwright": "catalog:",
         "@vitest/coverage-istanbul": "catalog:",
+        "nyc": "catalog:",
         "playwright": "catalog:",
+        "rimraf": "catalog:",
         "skills": "catalog:",
         "typescript": "catalog:",
         "vite": "catalog:",
+        "vite-plugin-istanbul": "catalog:",
         "vite-plus": "catalog:"
     },
     "engines": {

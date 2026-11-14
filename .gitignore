@@ -13,6 +13,12 @@ dist-ssr
 coverage
 *.local
 
+# E2E artifacts (Playwright + nyc)
+.nyc_output
+playwright-report
+test-results
+blob-report
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
