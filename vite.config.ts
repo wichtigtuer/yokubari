@@ -179,6 +179,22 @@ export default defineConfig({
                 }
             },
             {
+                files: ['scripts/**'],
+                rules: {
+                    // 🚫 Node CLI scripts: function declarations, sequential awaits and console output are idiomatic
+                    'func-style': 'off',
+                    'import/no-nodejs-modules': 'off',
+                    'max-statements': 'off',
+                    'no-await-in-loop': 'off',
+                    'no-console': 'off',
+                    'no-magic-numbers': 'off',
+                    // 🚫 Node's Buffer stream payloads are mutable class instances
+                    'typescript/prefer-readonly-parameter-types': 'off',
+                    // 🚫 Wrapping child-process events in a Promise executor is idiomatic
+                    'typescript/promise-function-async': 'off'
+                }
+            },
+            {
                 env: {
                     mocha: true
                 },
