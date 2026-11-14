@@ -13,6 +13,7 @@
         "fmt:fix": "vp fmt .",
         "lint": "vp lint .",
         "lint:fix": "vp lint . --fix",
+        "ok": "node scripts/ok.js",
         "start": "vp preview --open",
         "test": "vp test run",
         "test:e2e": "playwright test",
