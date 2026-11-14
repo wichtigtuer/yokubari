@@ -37,4 +37,4 @@ A PlayCanvas app in TypeScript, built with Vite. The scene is declared in HTML w
 
 ## Agent skills
 
-`.agents/skills/` hold PlayCanvas skills for coding agents. Use them rather than working from memory: `build-app` when restructuring the app, `find-examples` for a feature the project doesn't use yet, `reuse-scripts` before writing a behavior, `inspect-glb` before placing a model, `inspect-runtime` to read state from the running app, and `verify-pixels` to prove a refactor leaves the image unchanged.
+`.agents/skills/` hold PlayCanvas skills for coding agents. Use them rather than working from memory: `build-app` when restructuring the app, `find-examples` for a feature the project doesn't use yet, `reuse-scripts` before writing a behavior, `inspect-glb` before placing a model, `inspect-runtime` to read state from the running app, `verify-pixels` to prove a refactor leaves the image unchanged, and `vitest-tests` when writing or running unit tests.
