@@ -10,6 +10,7 @@ A PlayCanvas app in TypeScript, built with Vite. The scene is declared in HTML w
 - `pnpm run lint` runs the linter (Oxlint, via Vite+), and `pnpm run lint:fix` fixes what it can.
 - `pnpm run fmt` checks formatting, and `pnpm run fmt:fix` applies the formatter (Oxfmt, via Vite+).
 - `pnpm run build` builds the production site into `dist/`, and `pnpm run start` serves it.
+- `pnpm run ok` runs the OK script (`scripts/ok.ts`), which runs formatting, linting, typechecking, unit tests and e2e tests in sequence and fails fast on the first error.
 - `pnpm run test:e2e` runs the Playwright E2E suite in `e2e/` against the dev server, `pnpm run test:e2e:coverage` also collects istanbul coverage and reports it with nyc, and `pnpm run test:e2e:update-snapshots` regenerates screenshot and replay-state baselines.
 - `pnpm run dev` and `pnpm run start` open the page in the default browser.
 
@@ -42,6 +43,7 @@ A PlayCanvas app in TypeScript, built with Vite. The scene is declared in HTML w
 ## Checking your work
 
 - Run `pnpm run typecheck`, `pnpm run lint` and `pnpm run build` before you finish. All three must pass.
+- Always run `pnpm run ok` after a feature is completed. It must pass before the work is considered done.
 - To see the result, run `pnpm run dev` and open the page in a browser. The console should show `Powered by PlayCanvas` and no errors. Press the backquote key for the Inspector, which shows the hierarchy, assets, materials, textures, frame graph and physics. <kbd>F9</kbd> pauses and <kbd>F10</kbd> steps a frame.
 
 ## Agent skills
