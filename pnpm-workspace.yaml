@@ -1,7 +1,11 @@
 catalog:
     '@playcanvas/inspector': 0.5.0
     '@playcanvas/web-components': 0.30.0
+    '@vitest/browser-playwright': 5.1.0
+    '@vitest/coverage-istanbul': 5.1.0
     playcanvas: 2.24.0
+    playwright: 1.65.0
+    playwright-core: 1.65.0
     skills: 1.8.1
     typescript: 6.0.3
     vite: npm:@voidzero-dev/vite-plus-core@1.6.0

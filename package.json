@@ -12,6 +12,7 @@
         "lint": "vp lint .",
         "lint:fix": "vp lint . --fix",
         "start": "vp preview --open",
+        "test": "vp test run",
         "typecheck": "tsc --noEmit",
         "prepare": "vp config"
     },
@@ -21,6 +22,9 @@
     },
     "devDependencies": {
         "@playcanvas/inspector": "catalog:",
+        "@vitest/browser-playwright": "catalog:",
+        "@vitest/coverage-istanbul": "catalog:",
+        "playwright": "catalog:",
         "skills": "catalog:",
         "typescript": "catalog:",
         "vite": "catalog:",
