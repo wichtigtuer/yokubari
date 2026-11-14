@@ -2,7 +2,13 @@
 
 import { spawn } from 'node:child_process';
 
-const commands = [
+interface Check {
+    readonly args: readonly string[];
+    readonly command: string;
+    readonly name: string;
+}
+
+const checks: readonly Check[] = [
     { args: ['run', 'fmt'], command: 'pnpm', name: 'format' },
     { args: ['run', 'lint'], command: 'pnpm', name: 'lint' },
     { args: ['run', 'typecheck'], command: 'pnpm', name: 'typecheck' },
@@ -10,7 +16,7 @@ const commands = [
     { args: ['run', 'test:e2e'], command: 'pnpm', name: 'test:e2e' }
 ];
 
-async function runCommand({ name, command, args }) {
+function runCheck({ name, command, args }: Check): Promise<void> {
     return new Promise((resolve, reject) => {
         const child = spawn(command, args, {
             env: process.env,
@@ -20,11 +26,11 @@ async function runCommand({ name, command, args }) {
         let stdout = '';
         let stderr = '';
 
-        child.stdout.on('data', (data) => {
+        child.stdout.on('data', (data: Buffer) => {
             stdout += data.toString();
         });
 
-        child.stderr.on('data', (data) => {
+        child.stderr.on('data', (data: Buffer) => {
             stderr += data.toString();
         });
 
@@ -55,8 +61,8 @@ async function runCommand({ name, command, args }) {
 }
 
 try {
-    for (const command of commands) {
-        await runCommand(command);
+    for (const check of checks) {
+        await runCheck(check);
     }
 
     console.log('\n✓ all checks passed');

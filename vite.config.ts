@@ -188,11 +188,10 @@ export default defineConfig({
                     'no-await-in-loop': 'off',
                     'no-console': 'off',
                     'no-magic-numbers': 'off',
-                    // 🚫 Plain-JS scripts are outside tsconfig, so type-aware rules resolve to `error` types
-                    'typescript/no-unsafe-assignment': 'off',
-                    'typescript/no-unsafe-call': 'off',
-                    'typescript/no-unsafe-member-access': 'off',
-                    'typescript/prefer-readonly-parameter-types': 'off'
+                    // 🚫 Node's Buffer stream payloads are mutable class instances
+                    'typescript/prefer-readonly-parameter-types': 'off',
+                    // 🚫 Wrapping child-process events in a Promise executor is idiomatic
+                    'typescript/promise-function-async': 'off'
                 }
             },
             {
