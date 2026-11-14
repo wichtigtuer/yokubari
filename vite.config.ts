@@ -1,4 +1,5 @@
 import { defineConfig, lazyPlugins } from 'vite-plus';
+import { playwright } from 'vite-plus/test/browser-playwright';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,7 +12,7 @@ export default defineConfig({
         chunkSizeWarningLimit: 3000
     },
     fmt: {
-        ignorePatterns: ['.agents', 'public/ammo'],
+        ignorePatterns: ['.agents', 'public/ammo', 'coverage'],
         printWidth: 120,
         singleQuote: true,
         sortPackageJson: true,
@@ -31,7 +32,7 @@ export default defineConfig({
         env: {
             builtin: true
         },
-        ignorePatterns: ['.agents', 'public/ammo', '**/node_modules', '**/dist'],
+        ignorePatterns: ['.agents', 'public/ammo', 'coverage', '**/node_modules', '**/dist'],
         jsPlugins: [
             {
                 name: 'vite-plus',
@@ -93,7 +94,7 @@ export default defineConfig({
                 }
             },
             {
-                files: ['src/main.ts', 'src/inspector.ts'],
+                files: ['src/main.ts', 'src/inspector.ts', '**/*.dom.test.ts'],
                 rules: {
                     // 🚫 Side-effect imports (CSS) are idiomatic in Vite apps
                     'import/no-unassigned-import': 'off'
@@ -112,6 +113,8 @@ export default defineConfig({
                 },
                 files: ['**/test/**', '**/tests/**', '**/__tests__/**', '**/*.{test,spec}.{js,mjs,cjs,ts,tsx,mts,cts}'],
                 rules: {
+                    // 🚫 Fixtures and expectations read better as literals than named constants
+                    'no-magic-numbers': 'off',
                     'no-unused-expressions': 'off'
                 }
             },
@@ -134,6 +137,8 @@ export default defineConfig({
                 rules: {
                     // 🚫 Vite resolves the config through its default export
                     'import/no-default-export': 'off',
+                    // 🚫 One config block per tool naturally grows past the default limit
+                    'max-lines': 'off',
                     // 🚫 Plugin hook shapes come from vite-plus' defineConfig; inference reads better
                     'typescript/explicit-function-return-type': 'off'
                 }
@@ -295,5 +300,23 @@ export default defineConfig({
             ]
         }
     ]),
-    staged: { '*': 'vp check --fix' }
+    staged: { '*': 'vp check --fix' },
+    test: {
+        browser: {
+            enabled: true,
+            headless: true,
+            instances: [{ browser: 'chromium' }, { browser: 'firefox' }, { browser: 'webkit' }],
+            // https://vitest.dev/guide/browser/playwright
+            provider: playwright()
+        },
+        coverage: {
+            exclude: ['**/*.d.ts', 'src/inspector.ts', 'src/main.ts'],
+            include: ['src/**/*.ts'],
+            // V8 coverage supports only one browser instance; istanbul works with all three
+            provider: 'istanbul'
+        },
+        exclude: ['**/*.node.test.ts'],
+        include: ['src/**/*.dom.test.ts'],
+        isolate: true
+    }
 });
