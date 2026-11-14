@@ -1,5 +1,10 @@
 /// <reference types="vite/client" />
 
+interface ImportMetaEnv {
+    /** Set by the Playwright webServer so `?test=1` attaches `window.__pcTestApi` (src/main.ts) */
+    readonly VITE_TEST_MODE?: string;
+}
+
 declare module 'playcanvas/scripts/esm/camera-controls.mjs' {
     import type { Script } from 'playcanvas';
 

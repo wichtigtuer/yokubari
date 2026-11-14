@@ -1,5 +1,7 @@
 import { defineConfig, lazyPlugins } from 'vite-plus';
 import { playwright } from 'vite-plus/test/browser-playwright';
+import istanbul from 'vite-plugin-istanbul';
+import type { PluginOption } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,7 +14,15 @@ export default defineConfig({
         chunkSizeWarningLimit: 3000
     },
     fmt: {
-        ignorePatterns: ['.agents', 'public/ammo', 'coverage'],
+        ignorePatterns: [
+            '.agents',
+            '.nyc_output',
+            'coverage',
+            'playwright-report',
+            'public/ammo',
+            'test-results',
+            '**/*-snapshots'
+        ],
         printWidth: 120,
         singleQuote: true,
         sortPackageJson: true,
@@ -32,7 +42,17 @@ export default defineConfig({
         env: {
             builtin: true
         },
-        ignorePatterns: ['.agents', 'public/ammo', 'coverage', '**/node_modules', '**/dist'],
+        ignorePatterns: [
+            '.agents',
+            '.nyc_output',
+            'coverage',
+            'playwright-report',
+            'public/ammo',
+            'test-results',
+            '**/*-snapshots',
+            '**/node_modules',
+            '**/dist'
+        ],
         jsPlugins: [
             {
                 name: 'vite-plus',
@@ -108,10 +128,67 @@ export default defineConfig({
                 }
             },
             {
+                files: ['src/test-api.ts'],
+                rules: {
+                    // 🚫 Test support module: named exports at the point of declaration read better
+                    'import/exports-last': 'off',
+                    'import/group-exports': 'off',
+                    'import/no-named-export': 'off',
+                    // 🚫 Tick counters and fractions of a second read better as literals
+                    'no-magic-numbers': 'off',
+                    // 🚫 The browser-facing test surface is window.__pcTestApi by convention
+                    'no-underscore-dangle': 'off',
+                    // 🚫 The test API bridges mutable Engine objects (AppBase, Entity)
+                    'typescript/prefer-readonly-parameter-types': 'off',
+                    // 🚫 This module only ever runs in the browser
+                    'unicorn/prefer-global-this': 'off'
+                }
+            },
+            {
+                files: ['**/e2e/**', 'playwright.config.ts'],
+                rules: {
+                    // 🚫 Playwright fixtures and config lean on async helpers, named exports and env flags
+                    'func-style': 'off',
+                    'import/exports-last': 'off',
+                    'import/group-exports': 'off',
+                    'import/no-default-export': 'off',
+                    'import/no-named-export': 'off',
+                    // 🚫 Fixtures run in the Playwright Node.js process
+                    'import/no-nodejs-modules': 'off',
+                    // 🚫 e2e/ reaches into src/ for shared types
+                    'import/no-relative-parent-imports': 'off',
+                    // 🚫 Specs and fixture parsers read better as one sequential narrative
+                    'max-statements': 'off',
+                    // 🚫 Coverage is drained page by page, deliberately sequential
+                    'no-await-in-loop': 'off',
+                    'no-ternary': 'off',
+                    // 🚫 Playwright options express "no override" as undefined
+                    'no-undefined': 'off',
+                    'no-underscore-dangle': 'off',
+                    'oxc/no-async-await': 'off',
+                    // 🚫 Device descriptors are spread, per the Playwright documentation
+                    'oxc/no-rest-spread-properties': 'off',
+                    // 🚫 Node builtins and test-runner imports sort by convention, not member name
+                    'sort-imports': 'off',
+                    'typescript/prefer-readonly-parameter-types': 'off',
+                    'typescript/strict-boolean-expressions': 'off',
+                    // 🚫 JSON.stringify takes null as its replacer argument
+                    'unicorn/no-null': 'off',
+                    // 🚫 Page callbacks target the browser, where `window` reads naturally
+                    'unicorn/prefer-global-this': 'off'
+                }
+            },
+            {
                 env: {
                     mocha: true
                 },
-                files: ['**/test/**', '**/tests/**', '**/__tests__/**', '**/*.{test,spec}.{js,mjs,cjs,ts,tsx,mts,cts}'],
+                files: [
+                    '**/test/**',
+                    '**/tests/**',
+                    '**/__tests__/**',
+                    '**/e2e/**',
+                    '**/*.{test,spec}.{js,mjs,cjs,ts,tsx,mts,cts}'
+                ],
                 rules: {
                     // 🚫 Fixtures and expectations read better as literals than named constants
                     'no-magic-numbers': 'off',
@@ -139,8 +216,12 @@ export default defineConfig({
                     'import/no-default-export': 'off',
                     // 🚫 One config block per tool naturally grows past the default limit
                     'max-lines': 'off',
+                    // 🚫 Mixed value/default/type plugin imports defeat sort-imports' grouping
+                    'sort-imports': 'off',
                     // 🚫 Plugin hook shapes come from vite-plus' defineConfig; inference reads better
-                    'typescript/explicit-function-return-type': 'off'
+                    'typescript/explicit-function-return-type': 'off',
+                    // 🚫 vite-plus does not re-export the PluginOption type
+                    'vite-plus/prefer-vite-plus-imports': 'off'
                 }
             }
         ],
@@ -285,21 +366,37 @@ export default defineConfig({
             ]
         }
     },
-    plugins: lazyPlugins(() => [
-        {
-            // Dev only: install the PlayCanvas Inspector before the app starts (press ` to toggle)
-            apply: 'serve',
-            config: () => ({ optimizeDeps: { include: ['@playcanvas/inspector'] } }),
-            name: 'playcanvas-inspector',
-            transformIndexHtml: () => [
-                {
-                    attrs: { src: '/src/inspector.ts', type: 'module' },
-                    injectTo: 'head-prepend',
-                    tag: 'script'
-                }
-            ]
+    plugins: lazyPlugins(() => {
+        const plugins: PluginOption[] = [
+            {
+                // Dev only: install the PlayCanvas Inspector before the app starts (press ` to toggle)
+                apply: 'serve' as const,
+                config: () => ({ optimizeDeps: { include: ['@playcanvas/inspector'] } }),
+                name: 'playcanvas-inspector',
+                transformIndexHtml: () => [
+                    {
+                        attrs: { src: '/src/inspector.ts', type: 'module' },
+                        injectTo: 'head-prepend' as const,
+                        tag: 'script'
+                    }
+                ]
+            }
+        ];
+        // E2E coverage: instrument src/ with istanbul when Playwright runs the dev server (the
+        // Playwright webServer sets VITE_COVERAGE=true, see playwright.config.ts).
+        // The e2e/base-fixtures.ts fixture drains window.__coverage__ into .nyc_output/ for `nyc report`.
+        if (process.env.VITE_COVERAGE === 'true') {
+            plugins.push(
+                istanbul({
+                    exclude: ['e2e/**', 'node_modules/**', 'src/inspector.ts', '**/*.d.ts', '**/*.test.ts'],
+                    extension: ['.ts'],
+                    include: 'src/**/*.ts',
+                    requireEnv: false
+                })
+            );
         }
-    ]),
+        return plugins;
+    }),
     staged: { '*': 'vp check --fix' },
     test: {
         browser: {
