@@ -21,7 +21,10 @@ A PlayCanvas app in TypeScript, built with Vite. The scene is declared in HTML w
 - `src/main.ts` does what HTML can't, such as attaching scripts and handling input.
 - `src/starter.css` styles the page and the starter's panels.
 - `src/inspector.ts` loads the Inspector. `vite.config.ts` adds it in the dev server only, so production builds leave it out.
+- `src/vite-env.d.ts` holds ambient declarations: `ImportMetaEnv` flags such as `VITE_TEST_MODE`, and typings for engine ESM scripts under `playcanvas/scripts/esm/`. Add a declaration there when importing another engine script module.
+- `vite.config.ts` is the single configuration file: not just the build, but also the Oxfmt formatter, the Oxlint linter, the Vitest unit-test setup, dev-only Inspector injection, and istanbul instrumentation for E2E coverage.
 - `public/` holds files copied into the build as they are, such as models and textures.
+- Dependency versions are pinned in the pnpm `catalog:` in `pnpm-workspace.yaml`; `package.json` references them as `catalog:`. Add new dependencies to the catalog.
 
 ## Code Guidelines
 
@@ -118,7 +121,10 @@ The codebase is **exception-free everywhere**. Errors are values, not control fl
 
 ### TypeScript
 
-TypeScript is strict, and unused locals and parameters are errors.
+TypeScript is strict (`noUnusedLocals`/`noUnusedParameters` flag dead code as errors), plus two constraints from `tsconfig.json`:
+
+- `verbatimModuleSyntax` — type-only imports must use `import type` (enforces C-6); `allowSeparateTypeImports` lets a type import sit next to a value import of the same module.
+- `erasableSyntaxOnly` — no enums, namespaces, or parameter properties. Use union types of string literals instead of enums and plain object types instead of namespaces.
 
 1. **Be explicit** — provide types for all function parameters and return values. All types in TypeScript files carry TSDoc annotations.
 2. **No type assertions** — avoid `as` and `<Type>` casts; treat them as errors unless explicitly justified. Refactor existing casts into safe alternatives.
@@ -181,13 +187,24 @@ The tooling gates, all of which **MUST** pass before work is considered done:
 
 To see the result, run `pnpm run dev` and open the page in a browser. The console should show `Powered by PlayCanvas` and no errors. Press the backquote key for the Inspector, which shows the hierarchy, assets, materials, textures, frame graph and physics. <kbd>F9</kbd> pauses and <kbd>F10</kbd> steps a frame.
 
+## Unit testing
+
+- Unit tests are Vitest in browser mode, configured in `vite.config.ts` and run by `pnpm run test`. Specs are named `*.dom.test.ts` and live next to the code in `src/`; import `describe`/`it`/`expect` from `vite-plus/test`, not `vitest`.
+- Tests run in real browsers (chromium, firefox and webkit through the Playwright provider), so engine math and custom elements behave exactly as in production. `*.node.test.ts` files are excluded from this project.
+- Coverage uses istanbul (`@vitest/coverage-istanbul`), because V8 coverage supports only one browser instance; `src/main.ts`, `src/inspector.ts` and `**/*.d.ts` are excluded.
+- See the `vitest-tests` skill before writing or debugging unit tests.
+
 ## E2E testing
 
-- Playwright specs live in `e2e/` (`*.spec.ts`), driven by `e2e/base-fixtures.ts`, which collects istanbul coverage from `window.__coverage__` into `.nyc_output/` and exposes the shared helpers `gotoTestMode`, `stepFrames`, `dispatchInput`, `getState`, `freezeForSnapshot` and `runReplay`.
-- Specs run in test mode (`/?test=1`): `src/main.ts` attaches `window.__pcTestApi` (from `src/test-api.ts`) when the dev server runs with `VITE_TEST_MODE=1`, which `playwright.config.ts` sets on its webServer. Test mode freezes the real-time clock (`app.timeScale = 0`), so the simulation only advances through `stepFrames(n)` logical ticks of fixed `dt`.
-- Snapshot/replay tests feed a JSON fixture from `e2e/fixtures/` through `runReplay` and compare the final state against a committed snapshot in `e2e/<spec>-snapshots/`; screenshot tests carry an `@snapshot` tag and assert with `toHaveScreenshot`.
+- Playwright specs live in `e2e/` (`*.spec.ts`), driven by `e2e/base-fixtures.ts`, which collects istanbul coverage from `window.__coverage__` into `.nyc_output/` and exposes the shared helpers `gotoTestMode`, `stepFrames`, `dispatchInput`, `getState`, `freezeForSnapshot` and `runReplay`. Import `test` and `expect` from `./base-fixtures`, never from `@playwright/test` directly, or coverage collection is skipped.
+- Specs run in test mode (`/?test=1`): `src/main.ts` attaches `window.__pcTestApi` (from `src/test-api.ts`) only when the dev server runs with `VITE_TEST_MODE=1`, and dynamically imports it, so production builds never ship it. Test mode freezes the real-time clock (`app.timeScale = 0`), so the simulation only advances through `stepFrames(n)` logical ticks of fixed `FIXED_DT` (1/60 s); render-only rAF frames do not move `frameIndex`.
+- The test API keeps snapshots portable: `getState()` always returns a clone, and rotations are rounded to 6 decimals to absorb per-engine floating-point differences in trigonometry.
+- Synchronize on state, not on events or timers: entity picks are asynchronous GPU readbacks, so after pointer input use `page.waitForFunction` against `getState()` rather than assuming the event landed.
+- Snapshot/replay tests feed a JSON fixture from `e2e/fixtures/` through `runReplay` and compare the final state against a committed snapshot in `e2e/<spec>.spec.ts-snapshots/`, one file per Playwright project; screenshot tests carry an `@snapshot` tag and assert with `toHaveScreenshot`. Fixtures are validated by `parseReplayFixture` in `e2e/replay-fixture.ts`, a non-throwing `Result`-returning parser, so malformed fixtures fail with a readable message.
+- Five Playwright projects run each spec: desktop chromium, firefox and webkit, plus mobile Chrome (Pixel 5) and mobile Safari (iPhone 12). On CI there are 2 retries and traces/videos are captured on first retry.
 - Firefox runs headed under Xvfb on headless Linux (started by `e2e/global-setup.ts`), because headless Firefox cannot create a WebGL device there.
 - `vite.config.ts` instruments `src/` with `vite-plugin-istanbul` when `VITE_COVERAGE=true`; `.nycrc.json` configures `nyc report` (output in `coverage/e2e/`).
+- See the `e2e-tests` skill before writing or debugging E2E tests.
 
 ## Conventions
 
@@ -197,6 +214,9 @@ To see the result, run `pnpm run dev` and open the page in a browser. The consol
 - Builds use relative URLs (`base: './'` in `vite.config.ts`), so they run from any folder. Load files in `public/` with relative paths such as `./model.glb`, not `/model.glb`.
 - The engine ships ready-made scripts, such as camera controls and character controllers, under `playcanvas/scripts/esm/`. Use one before writing the same behavior yourself.
 - `node_modules/playcanvas/build/playcanvas.d.ts` documents the installed engine's API.
+- Formatting is Oxfmt, configured in `vite.config.ts`: 4-space indent, single quotes, 120-column width, no trailing commas. Run `pnpm run fmt:fix` rather than formatting by hand.
+- Linting is Oxlint with every category at `error`, `denyWarnings`, and type-aware checks, configured in `vite.config.ts`. When a rule genuinely does not fit a file, add a narrow `overrides` entry scoped to the smallest glob with a `🚫` comment explaining why — matching the existing entries — instead of disabling rules inline or broadly.
+- Commit hooks run `vp check --fix` on staged files (the `staged` block in `vite.config.ts`), so expect staged changes to be auto-fixed at commit time.
 
 ## Agent skills
 
