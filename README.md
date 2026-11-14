@@ -1,15 +1,17 @@
-# PlayCanvas Web Components + TypeScript Starter
+# Super Dr. Yokubari Fighter Mania Puzzle Drop Turbo
 
 A [Vite+](https://viteplus.dev)-powered `@playcanvas/web-components` project with TypeScript, Oxlint and Oxfmt. The scene is
 declared as HTML custom elements in `index.html`.
 
-## Spinning Cube
+## Super Dr. Yokubari Fighter Mania Puzzle Drop Turbo
 
-A rotating cube, a camera and a directional light. It is the smallest PlayCanvas scene in the catalog.
+The current scene is the foundation the game is being built on: a rotating cube, a camera and a
+directional light — the smallest PlayCanvas scene in the catalog. Clicking the cube reverses its
+spin, proving out the pointer-picking pipeline the puzzle gameplay will build on.
 
 ### Controls
 
-The scene runs automatically; no input is required.
+The scene runs automatically; click the cube to reverse its spin.
 
 ## Prerequisites
 
