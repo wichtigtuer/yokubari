@@ -1,4 +1,4 @@
-import { createRng, nextInt } from './random';
+import { createRng, nextInt, weightedChoice } from './random';
 import { describe, expect, it } from 'vite-plus/test';
 
 const SEQUENCE_LENGTH = 100;
@@ -49,5 +49,54 @@ describe('nextInt', () => {
         expect(draws.every((draw) => Number.isInteger(draw))).toBe(true);
         expect(Math.min(...draws)).toBeGreaterThanOrEqual(0);
         expect(Math.max(...draws)).toBeLessThan(BOUND_COUNT);
+    });
+});
+
+describe('weightedChoice', () => {
+    it('never picks an entry with zero weight', () => {
+        // Arrange
+        const rng = createRng(11);
+        const entries = [
+            ['m0', 1],
+            ['m1', 0]
+        ] as const;
+
+        // Act
+        const picks = Array.from({ length: DRAWS_PER_BOUND_CHECK }, () => weightedChoice(rng, entries));
+
+        // Assert
+        expect(picks.every((pick) => pick.type === 'ok' && pick.value === 'm0')).toBe(true);
+    });
+
+    it('rejects an empty entry list', () => {
+        // Arrange / act
+        const outcome = weightedChoice(createRng(1), []);
+
+        // Assert
+        expect(outcome).toEqual({ error: { reason: 'empty' }, type: 'error' });
+    });
+
+    it('rejects entries whose weights are all non-positive', () => {
+        // Arrange / act
+        const outcome = weightedChoice(createRng(1), [['m0', 0]]);
+
+        // Assert
+        expect(outcome).toEqual({ error: { reason: 'no-positive-weight' }, type: 'error' });
+    });
+
+    it('favours heavier weights across many draws', () => {
+        // Arrange
+        const rng = createRng(99);
+        const entries = [
+            ['heavy', 9],
+            ['light', 1]
+        ] as const;
+
+        // Act
+        const picks = Array.from({ length: DRAWS_PER_BOUND_CHECK }, () => weightedChoice(rng, entries));
+        const heavyCount = picks.filter((pick) => pick.type === 'ok' && pick.value === 'heavy').length;
+
+        // Assert: 90% expected; a generous lower bound keeps the test deterministic-safe
+        expect(heavyCount).toBeGreaterThan(DRAWS_PER_BOUND_CHECK / 2);
     });
 });
