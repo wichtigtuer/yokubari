@@ -153,7 +153,9 @@ export default defineConfig({
                     'import/group-exports': 'off',
                     'import/no-named-export': 'off',
                     // 🚫 Layered modules import downward (contracts/game -> utils) without a package boundary
-                    'import/no-relative-parent-imports': 'off'
+                    'import/no-relative-parent-imports': 'off',
+                    // 🚫 Immutable record updates idiomatically use object spread (prefer-object-spread stays on)
+                    'oxc/no-rest-spread-properties': 'off'
                 }
             },
             {
