@@ -163,7 +163,9 @@ export default defineConfig({
                 rules: {
                     // 🚫 Spec §15 vocabulary: column/pair index unions are data, `y` names the vertical axis
                     'id-length': 'off',
-                    'no-magic-numbers': 'off'
+                    'no-magic-numbers': 'off',
+                    // 🚫 Branding constructors are the single, documented assertion point of the brand idiom
+                    'typescript/no-unsafe-type-assertion': 'off'
                 }
             },
             {

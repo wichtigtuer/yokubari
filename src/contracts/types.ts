@@ -21,6 +21,12 @@ export type SpeedMode = 'low' | 'high';
 /** Nominal identity of a falling object, stable across ticks. */
 export type ObjectId = Brand<number, 'ObjectId'>;
 
+/** Brands a number as an {@link ObjectId}; the single place the brand is asserted. */
+export function toObjectId(value: number): ObjectId {
+    // Justified assertion: the brand is compile-time-only, and this constructor is its sole source
+    return value as ObjectId;
+}
+
 /** An object currently falling: its kind, the column it occupies and its vertical position. */
 export type FallingObject = Readonly<{ id: ObjectId; kind: Falling; column: ColumnIndex; y: number }>;
 
