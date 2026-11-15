@@ -49,8 +49,8 @@ export type GameConfig = Readonly<{
     stageBonuses: readonly number[];
     /** Fall steps needed to cross one stack cell (spec §7). [U] */
     stepsPerCell: number;
-    /** Carry rule for falling objects during a tray swap (spec §6). */
-    swapCarryOperator: '>=';
+    /** Carry rule for falling objects during a tray swap (spec §6); tunable per spec §17. */
+    swapCarryOperator: '>=' | '>';
     /** Spawn distribution over the six falling types (spec §4); uniform by default. [U] */
     typeWeights: readonly (readonly [Falling, number])[];
     /** Round tokens needed to win a versus match (spec §12.3). */
