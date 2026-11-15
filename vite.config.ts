@@ -173,6 +173,8 @@ export default defineConfig({
                 rules: {
                     // 🚫 Spec §15 axis vocabulary (FallingObject.y) names properties, not variables
                     'id-length': ['error', { properties: 'never' }],
+                    // 🚫 Tick pipelines thread (state, context, rng, config) — arity is the design API
+                    'max-params': 'off',
                     // 🚫 Board index arithmetic uses structural literals; domain numbers must come from GAME_CONFIG
                     'no-magic-numbers': 'off',
                     // 🚫 Readonly is declared on the types; the rule cannot see through branded intersections

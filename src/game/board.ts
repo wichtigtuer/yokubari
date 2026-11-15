@@ -1,6 +1,11 @@
+import type { BoardState, StackItem } from '../contracts/types';
 import { none, some } from '../utils/result';
 import type { Option } from '../utils/result';
-import type { StackItem } from '../contracts/types';
+
+/** A fresh board: four empty trays, nothing falling, no ticks elapsed. */
+export function createEmptyBoard(): BoardState {
+    return { columns: [[], [], [], []], fallAccumulator: 0, falling: [], nextObjectId: 0, pending: [] };
+}
 
 /** Number of objects resting in a tray stack. */
 export function heightOf(column: readonly StackItem[]): number {

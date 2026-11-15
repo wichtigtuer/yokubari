@@ -42,10 +42,16 @@ export type Phase =
     | 'round-result'
     | 'match-result';
 
-/** The board: four tray stacks plus everything currently falling above them. */
+/** A spawned object waiting out its staggered entry delay above the board (spec §4). */
+export type PendingObject = Readonly<{ column: ColumnIndex; kind: Falling; remainingTicks: number }>;
+
+/** The board: four tray stacks plus everything falling above them and the tick-scheduling state. */
 export type BoardState = Readonly<{
     columns: readonly (readonly StackItem[])[];
+    fallAccumulator: number;
     falling: readonly FallingObject[];
+    nextObjectId: number;
+    pending: readonly PendingObject[];
 }>;
 
 /** Level progression counters; they evolve together and travel as one immutable unit. */
