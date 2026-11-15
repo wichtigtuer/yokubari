@@ -35,8 +35,8 @@ export type GameConfig = Readonly<{
     monsterPairScore: number;
     /** Number of selectable music tracks on the menu. */
     musicTrackCount: number;
-    /** Monster pairs stacked per column by stage prefill. [U] */
-    prefillPairsPerColumn: number;
+    /** Height of one prefill run; runs are even so pairs annihilate from the top down. */
+    prefillRunHeight: number;
     /** Upper bound of the speed ramp counter (spec §12.1). [U] */
     rampCounterMax: number;
     /** Ticks shaved off the base interval per ramp-counter step (spec §11). [U] */
@@ -84,7 +84,7 @@ export const GAME_CONFIG = {
     minFallInterval: 1,
     monsterPairScore: 5,
     musicTrackCount: 3,
-    prefillPairsPerColumn: 2,
+    prefillRunHeight: 2,
     rampCounterMax: 20,
     rampIntervalStep: 2,
     softDropMultiplier: 4,

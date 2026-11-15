@@ -154,6 +154,8 @@ export default defineConfig({
                     'import/no-named-export': 'off',
                     // 🚫 Layered modules import downward (contracts/game -> utils) without a package boundary
                     'import/no-relative-parent-imports': 'off',
+                    // 🚫 Library modules grow named exports task by task; default exports would churn call sites
+                    'import/prefer-default-export': 'off',
                     // 🚫 Immutable record updates idiomatically use object spread (prefer-object-spread stays on)
                     'oxc/no-rest-spread-properties': 'off'
                 }
