@@ -54,3 +54,4 @@ blob-report
 .agents/skills/sdte-loop
 .agents/skills/web-components
 .agents/skills/web-security
+.vitest
