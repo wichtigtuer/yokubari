@@ -1,6 +1,7 @@
 import type { Falling, StackItem } from '../contracts/types';
 import type { GameConfig, HatchTier } from '../contracts/config';
 import { dropTop, pushItem, topOf } from './board';
+import { resolveCap } from './egg';
 
 /** Exactly one outcome of a falling object meeting a stack (spec §8/§9). */
 export type LandingOutcome =
@@ -24,7 +25,7 @@ function pairScore(kind: Exclude<Falling, 'cap'>, config: GameConfig): number {
  */
 export function resolveLanding(column: readonly StackItem[], incoming: Falling, config: GameConfig): LandingOutcome {
     if (incoming === 'cap') {
-        return { type: 'cap-vanished' };
+        return resolveCap(column, config);
     }
     const top = topOf(column);
     if (top.type === 'some' && top.value === incoming) {
