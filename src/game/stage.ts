@@ -1,6 +1,7 @@
-import type { Monster, StackItem } from '../contracts/types';
+import type { BoardState, Monster, StackItem } from '../contracts/types';
 import type { GameConfig } from '../contracts/config';
 import type { Rng } from '../utils/random';
+import { heightOf } from './board';
 import { nextInt } from '../utils/random';
 
 const MONSTER_KINDS: readonly Monster[] = ['m0', 'm1', 'm2', 'm3'];
@@ -32,4 +33,16 @@ export function generatePrefill(rng: Rng, level: number, config: GameConfig): re
         columns.push(buildColumn(rng, runsPerColumn, config));
     }
     return columns;
+}
+
+/** A stage is cleared only when every stack is empty and nothing is falling or pending (spec §14 step 9). */
+export function isStageCleared(board: BoardState): boolean {
+    const stacksEmpty = board.columns.every((column) => heightOf(column) === 0);
+    return stacksEmpty && board.falling.length === 0 && board.pending.length === 0;
+}
+
+/** Bonus for the stage just cleared; stage numbers above the table clamp to its last row. */
+export function stageBonus(stageNumber: number, config: GameConfig): number {
+    const row = Math.min(Math.max(stageNumber, 1), config.stageBonuses.length) - 1;
+    return config.stageBonuses[row];
 }
