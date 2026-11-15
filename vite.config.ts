@@ -155,6 +155,13 @@ export default defineConfig({
                 }
             },
             {
+                files: ['src/utils/pipe.ts'],
+                rules: {
+                    // 🚫 Variadic composition utility: one overload per arity is the point
+                    'max-params': 'off'
+                }
+            },
+            {
                 files: ['src/contracts/config.ts', 'src/contracts/config.dom.test.ts'],
                 rules: {
                     // 🚫 The config module is a typed data table; literals are the content, not magic
