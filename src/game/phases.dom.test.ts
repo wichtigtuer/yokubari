@@ -58,6 +58,29 @@ describe('transition legal moves (spec §13)', () => {
     });
 });
 
+describe('transition illegal moves (spec §13)', () => {
+    it('rejects events the graph does not allow, with a typed error', () => {
+        // Arrange / act
+        const fromTitle = transition(appIn('title'), { type: 'game-over' }, GAME_CONFIG);
+        const fromPaused = transition(appIn('paused'), { type: 'confirm-menu' }, GAME_CONFIG);
+        const fromStageClear = transition(appIn('stage-clear'), { type: 'start-pressed' }, GAME_CONFIG);
+
+        // Assert
+        expect(fromTitle).toEqual({
+            error: { event: 'game-over', from: 'title', reason: 'illegal-transition' },
+            type: 'error'
+        });
+        expect(fromPaused).toEqual({
+            error: { event: 'confirm-menu', from: 'paused', reason: 'illegal-transition' },
+            type: 'error'
+        });
+        expect(fromStageClear).toEqual({
+            error: { event: 'start-pressed', from: 'stage-clear', reason: 'illegal-transition' },
+            type: 'error'
+        });
+    });
+});
+
 describe('transition end states (spec §13)', () => {
     it('walks playing -> game-over on overflow', () => {
         // Arrange / act / assert
