@@ -31,6 +31,23 @@ describe('swapTrays stack exchange (spec §6)', () => {
         expect(board.columns[1]).toEqual(['m0', 'm1']);
     });
 
+    it('exchanges an empty column with a full one, trading emptiness', () => {
+        // Arrange / act
+        const result = swapTrays(boardWithColumns([['m0', 'm1'], [], ['m2'], []]), 0, GAME_CONFIG);
+
+        // Assert
+        expect(result.board.columns).toEqual([[], ['m0', 'm1'], ['m2'], []]);
+        expect(result.carried).toEqual([]);
+    });
+
+    it('swapping two empty columns is legal and changes nothing', () => {
+        // Arrange / act
+        const result = swapTrays(boardWithColumns([['m0'], [], [], ['m1']]), 1, GAME_CONFIG);
+
+        // Assert
+        expect(result.board.columns).toEqual([['m0'], [], [], ['m1']]);
+    });
+
     it('T14: non-adjacent pairs are unrepresentable at the type level', () => {
         // Arrange
         const board = createEmptyBoard();
