@@ -155,6 +155,13 @@ export default defineConfig({
                 }
             },
             {
+                files: ['src/utils/random.ts'],
+                rules: {
+                    // 🚫 PRNG mixing (mulberry32) is bitwise by definition
+                    'no-bitwise': 'off'
+                }
+            },
+            {
                 files: ['src/utils/pipe.ts'],
                 rules: {
                     // 🚫 Variadic composition utility: one overload per arity is the point
