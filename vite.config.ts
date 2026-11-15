@@ -169,8 +169,12 @@ export default defineConfig({
             {
                 files: ['src/game/**'],
                 rules: {
+                    // 🚫 Spec §15 axis vocabulary (FallingObject.y) names properties, not variables
+                    'id-length': ['error', { properties: 'never' }],
                     // 🚫 Board index arithmetic uses structural literals; domain numbers must come from GAME_CONFIG
                     'no-magic-numbers': 'off',
+                    // 🚫 Readonly is declared on the types; the rule cannot see through branded intersections
+                    'typescript/prefer-readonly-parameter-types': 'off',
                     // 🚫 Computed board indices (column.length - 1) are not expressible with .at()
                     'unicorn/prefer-at': 'off'
                 }
