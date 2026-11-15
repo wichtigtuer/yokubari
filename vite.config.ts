@@ -165,6 +165,15 @@ export default defineConfig({
                 }
             },
             {
+                files: ['src/game/**'],
+                rules: {
+                    // 🚫 Board index arithmetic uses structural literals; domain numbers must come from GAME_CONFIG
+                    'no-magic-numbers': 'off',
+                    // 🚫 Computed board indices (column.length - 1) are not expressible with .at()
+                    'unicorn/prefer-at': 'off'
+                }
+            },
+            {
                 files: ['src/utils/random.ts'],
                 rules: {
                     // 🚫 PRNG mixing (mulberry32) is bitwise by definition
