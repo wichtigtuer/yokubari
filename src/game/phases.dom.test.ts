@@ -59,6 +59,26 @@ describe('transition legal moves (spec §13)', () => {
 });
 
 describe('transition illegal moves (spec §13)', () => {
+    it('T6: no simulation-driving event reaches the board while paused — time cannot pass', () => {
+        // Arrange: every event except the resume press
+        const paused = appIn('paused');
+        const events: AppEvent[] = [
+            { type: 'advance' },
+            { type: 'game-over' },
+            { type: 'stage-cleared' },
+            { type: 'confirm-menu' },
+            { type: 'round-decided' },
+            { type: 'match-decided' },
+            { count: 1, type: 'choose-players' }
+        ];
+
+        // Act / Assert: all rejected, so the tick loop has nothing to run on while paused
+        for (const event of events) {
+            expect(transition(paused, event, GAME_CONFIG).type).toBe('error');
+        }
+        expect(transition(paused, { type: 'start-pressed' }, GAME_CONFIG).type).toBe('ok');
+    });
+
     it('rejects events the graph does not allow, with a typed error', () => {
         // Arrange / act
         const fromTitle = transition(appIn('title'), { type: 'game-over' }, GAME_CONFIG);
