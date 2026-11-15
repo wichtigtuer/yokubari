@@ -5,10 +5,10 @@ import { resolveCap } from './egg';
 
 /** Exactly one outcome of a falling object meeting a stack (spec §8/§9). */
 export type LandingOutcome =
-    | Readonly<{ type: 'stacked'; column: StackItem[] }>
-    | Readonly<{ type: 'pair-cleared'; column: StackItem[]; points: number }>
+    | Readonly<{ type: 'stacked'; column: readonly StackItem[] }>
+    | Readonly<{ type: 'pair-cleared'; column: readonly StackItem[]; points: number }>
     | Readonly<{ type: 'cap-vanished' }>
-    | Readonly<{ type: 'hatched'; column: StackItem[]; enclosed: number; tier: HatchTier; points: number }>;
+    | Readonly<{ type: 'hatched'; column: readonly StackItem[]; enclosed: number; tier: HatchTier; points: number }>;
 
 /** Points for an annihilated pair: base halves and monsters score independently (spec §8). */
 function pairScore(kind: Exclude<Falling, 'cap'>, config: GameConfig): number {

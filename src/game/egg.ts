@@ -9,7 +9,7 @@ export type HatchTierError = Readonly<{ reason: 'enclosed-out-of-range'; enclose
 /** Outcome of a cap half landing on a column (spec §9). */
 export type EggResolution =
     | Readonly<{ type: 'cap-vanished' }>
-    | Readonly<{ type: 'hatched'; column: StackItem[]; enclosed: number; tier: HatchTier; points: number }>;
+    | Readonly<{ type: 'hatched'; column: readonly StackItem[]; enclosed: number; tier: HatchTier; points: number }>;
 
 /** Index of the topmost base half in a column — the one a landing cap binds (spec §9 [M]). */
 export function findTopmostBaseIndex(column: readonly StackItem[]): Option<number> {
