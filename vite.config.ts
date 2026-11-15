@@ -145,6 +145,23 @@ export default defineConfig({
                 }
             },
             {
+                files: ['src/utils/**', 'src/contracts/**', 'src/game/**'],
+                rules: {
+                    // 🚫 Pure library modules: many cohesive named exports, function declarations read better
+                    'func-style': 'off',
+                    'import/exports-last': 'off',
+                    'import/group-exports': 'off',
+                    'import/no-named-export': 'off'
+                }
+            },
+            {
+                files: ['src/contracts/config.ts', 'src/contracts/config.dom.test.ts'],
+                rules: {
+                    // 🚫 The config module is a typed data table; literals are the content, not magic
+                    'no-magic-numbers': 'off'
+                }
+            },
+            {
                 files: ['**/e2e/**', 'playwright.config.ts'],
                 rules: {
                     // 🚫 Playwright fixtures and config lean on async helpers, named exports and env flags
