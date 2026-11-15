@@ -151,7 +151,17 @@ export default defineConfig({
                     'func-style': 'off',
                     'import/exports-last': 'off',
                     'import/group-exports': 'off',
-                    'import/no-named-export': 'off'
+                    'import/no-named-export': 'off',
+                    // 🚫 Layered modules import downward (contracts/game -> utils) without a package boundary
+                    'import/no-relative-parent-imports': 'off'
+                }
+            },
+            {
+                files: ['src/contracts/types.ts'],
+                rules: {
+                    // 🚫 Spec §15 vocabulary: column/pair index unions are data, `y` names the vertical axis
+                    'id-length': 'off',
+                    'no-magic-numbers': 'off'
                 }
             },
             {
