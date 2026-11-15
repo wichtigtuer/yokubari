@@ -27,8 +27,13 @@ describe('swapTrays stack exchange (spec §6)', () => {
         // Arrange
         const board = createEmptyBoard();
 
-        // Act / Assert: pair index 3 would name columns 3 and 4 — rejected by the compiler
-        // @ts-expect-error non-adjacent pairs are not expressible
-        expect(() => swapTrays(board, 3, GAME_CONFIG)).not.toThrow();
+        // Act: pair index 3 would name columns 3 and 4 — the compiler rejects it, so this never runs
+        const rejected = (): void => {
+            // @ts-expect-error non-adjacent pairs are not expressible
+            swapTrays(board, 3, GAME_CONFIG);
+        };
+
+        // Assert: the function exists only so the type error above stays checked, not to be called
+        expect(rejected).toBeTypeOf('function');
     });
 });
