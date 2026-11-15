@@ -249,7 +249,9 @@ export default defineConfig({
                 rules: {
                     // 🚫 Fixtures and expectations read better as literals than named constants
                     'no-magic-numbers': 'off',
-                    'no-unused-expressions': 'off'
+                    'no-unused-expressions': 'off',
+                    // 🚫 Test callbacks assert on values; readonly-parameter contracts are an API concern
+                    'typescript/prefer-readonly-parameter-types': 'off'
                 }
             },
             {
