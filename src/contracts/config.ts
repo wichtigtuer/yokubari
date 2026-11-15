@@ -45,7 +45,7 @@ export type GameConfig = Readonly<{
     spawnStaggerTicks: number;
     /** Maximum stack height before overflow (spec §2). */
     stackCapacity: number;
-    /** Stage-clear bonus per stage number (index = stage - 1). [U] */
+    /** Stage-clear bonus per stage number (index = stage - 1); lookups clamp at the last row. [U] */
     stageBonuses: readonly number[];
     /** Fall steps needed to cross one stack cell (spec §7). [U] */
     stepsPerCell: number;
@@ -87,7 +87,10 @@ export const GAME_CONFIG = {
     softDropMultiplier: 4,
     spawnStaggerTicks: 6,
     stackCapacity: 7,
-    stageBonuses: [1000, 2000, 3000, 5000, 8000],
+    stageBonuses: [
+        50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100,
+        1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500
+    ],
     stepsPerCell: 4,
     swapCarryOperator: '>=',
     typeWeights: [
