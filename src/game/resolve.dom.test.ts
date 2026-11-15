@@ -43,4 +43,12 @@ describe('resolveLanding (spec §8)', () => {
         // Assert
         expect(outcome).toEqual({ column: ['m2', 'base'], type: 'stacked' });
     });
+
+    it('a buried identical monster never matches; only the top is compared', () => {
+        // Arrange / act
+        const outcome = resolveLanding(['m0', 'm1'], 'm0', GAME_CONFIG);
+
+        // Assert
+        expect(outcome).toEqual({ column: ['m0', 'm1', 'm0'], type: 'stacked' });
+    });
 });
