@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vite-plus/test';
 
 import type { FallContext } from './gravity';
 import { GAME_CONFIG } from '../contracts/config';
+import { createEmptyBoard } from './board';
 import { createRng } from '../utils/random';
 import { tickBoard } from './tick';
 import { toObjectId } from '../contracts/types';
@@ -66,6 +67,56 @@ describe('tickBoard landing resolution (spec §14)', () => {
         expect(result.landedCount).toBe(0);
         expect(result.board.falling[0].y).toBe(STEP);
         expect(result.board.fallAccumulator).toBe(INTERVAL - 1);
+    });
+});
+
+describe('tickBoard spawn cadence (spec §4/§14)', () => {
+    it('emits batch-spawned on the first tick and enters the delay-free object at once', () => {
+        // Arrange / act
+        const result = tickBoard(createEmptyBoard(), CONTEXT, createRng(5), GAME_CONFIG);
+        const [event] = result.events;
+
+        // Assert
+        expect(event.type).toBe('batch-spawned');
+        if (event.type === 'batch-spawned') {
+            expect(event.batch.objects).toHaveLength(GAME_CONFIG.batchSize);
+        }
+        expect(result.board.falling).toHaveLength(1);
+        expect(result.board.pending).toHaveLength(GAME_CONFIG.batchSize - 1);
+        expect(result.board.falling[0].y).toBe(GAME_CONFIG.stackCapacity + 1);
+    });
+
+    it('emits batch-spawned on the tick after the field empties', () => {
+        // Arrange: the last falling object lands this tick
+        const rng = createRng(9);
+        const board = boardWith([[], [], [], []], [fallingAt(1, 'm0', 0, STEP)], INTERVAL - 1);
+
+        // Act
+        const landed = tickBoard(board, CONTEXT, rng, GAME_CONFIG);
+        const spawned = tickBoard(landed.board, CONTEXT, rng, GAME_CONFIG);
+        const [event] = spawned.events;
+
+        // Assert
+        expect(landed.board.falling).toEqual([]);
+        expect(event.type).toBe('batch-spawned');
+    });
+
+    it('enters a pending object when its stagger elapses, with a fresh id', () => {
+        // Arrange
+        const board: BoardState = {
+            ...createEmptyBoard(),
+            pending: [{ column: 2, kind: 'base', remainingTicks: 1 }]
+        };
+
+        // Act
+        const result = tickBoard(board, CONTEXT, createRng(3), GAME_CONFIG);
+
+        // Assert
+        expect(result.board.pending).toEqual([]);
+        expect(result.board.falling).toEqual([
+            { column: 2, id: toObjectId(0), kind: 'base', y: GAME_CONFIG.stackCapacity + 1 }
+        ]);
+        expect(result.board.nextObjectId).toBe(1);
     });
 });
 
