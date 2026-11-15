@@ -47,11 +47,11 @@ function enqueueBatch(board: BoardState, batch: Batch, config: GameConfig): Boar
 }
 
 /** Spawns the next batch when the field holds nothing falling or pending (spec §14 step 10). */
-function maybeSpawn(board: BoardState, rng: Rng, config: GameConfig): SpawnStage {
+function maybeSpawn(board: BoardState, context: FallContext, rng: Rng, config: GameConfig): SpawnStage {
     if (board.falling.length > 0 || board.pending.length > 0) {
         return { board, events: [] };
     }
-    const batch = generateBatch(rng, config, config.batchSize);
+    const batch = generateBatch(rng, config, context.batchSize);
     if (batch.type === 'error') {
         // Unreachable for a config that passes the invariant tests; the game cannot continue
         return { board, events: [{ type: 'game-over' }] };
@@ -159,7 +159,7 @@ function resolveLandings(board: BoardState, config: GameConfig): ResolutionStage
 
 /** One board tick in spec §14 order: spawn when empty, enter due objects, advance, resolve. */
 export function tickBoard(board: BoardState, context: FallContext, rng: Rng, config: GameConfig): TickResult {
-    const spawned = maybeSpawn(board, rng, config);
+    const spawned = maybeSpawn(board, context, rng, config);
     const entered = enterPending(spawned.board, config);
     const stepped = advanceFall(entered, context, config);
     const resolved = resolveLandings(stepped, config);

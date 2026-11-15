@@ -3,6 +3,7 @@ import type { GameConfig } from '../contracts/config';
 
 /** Everything that determines how fast objects fall right now (spec §7). */
 export type FallContext = Readonly<{
+    batchSize: number;
     level: number;
     rampCounter: number;
     softDrop: boolean;
@@ -14,7 +15,8 @@ const MIN_LEVEL = 1;
 /**
  * Ticks between two fall steps (spec §7): the configured interval for the speed mode and level,
  * shortened by the ramp counter and divided while soft drop is held — never below the minimum,
- * so objects always advance step by step and never teleport (T15).
+ * so objects always advance step by step and never teleport (T15). The batch size rides along so
+ * the tick pipeline spawns the batch the progression armed.
  */
 export function fallIntervalTicks(context: FallContext, config: GameConfig): number {
     const table = config.fallIntervals[context.speedMode];

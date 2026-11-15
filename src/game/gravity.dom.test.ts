@@ -6,6 +6,7 @@ import { GAME_CONFIG } from '../contracts/config';
 import { toObjectId } from '../contracts/types';
 
 const context = (speedMode: 'low' | 'high', level: number, softDrop: boolean): FallContext => ({
+    batchSize: GAME_CONFIG.batchSize,
     level,
     rampCounter: 0,
     softDrop,

@@ -56,7 +56,13 @@ describe('advanceRamp (spec §12.1)', () => {
 
     it('shortens the fall interval as the ramp climbs', () => {
         // Arrange
-        const calm = { level: 1, rampCounter: 0, softDrop: false, speedMode: 'low' } as const;
+        const calm = {
+            batchSize: GAME_CONFIG.batchSize,
+            level: 1,
+            rampCounter: 0,
+            softDrop: false,
+            speedMode: 'low'
+        } as const;
         const ramped = { ...calm, rampCounter: 5 };
 
         // Act / Assert

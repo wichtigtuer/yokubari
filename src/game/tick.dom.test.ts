@@ -8,7 +8,13 @@ import { createRng } from '../utils/random';
 import { tickBoard } from './tick';
 import { toObjectId } from '../contracts/types';
 
-const CONTEXT: FallContext = { level: 1, rampCounter: 0, softDrop: false, speedMode: 'low' };
+const CONTEXT: FallContext = {
+    batchSize: GAME_CONFIG.batchSize,
+    level: 1,
+    rampCounter: 0,
+    softDrop: false,
+    speedMode: 'low'
+};
 const STEP = 1 / GAME_CONFIG.stepsPerCell;
 const [INTERVAL] = GAME_CONFIG.fallIntervals.low;
 
