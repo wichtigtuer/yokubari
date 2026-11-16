@@ -145,7 +145,7 @@ export default defineConfig({
                 }
             },
             {
-                files: ['src/utils/**', 'src/contracts/**', 'src/game/**'],
+                files: ['src/utils/**', 'src/contracts/**', 'src/game/**', 'src/render/**'],
                 rules: {
                     // 🚫 Pure library modules: many cohesive named exports, function declarations read better
                     'func-style': 'off',
@@ -171,7 +171,7 @@ export default defineConfig({
                 }
             },
             {
-                files: ['src/game/**'],
+                files: ['src/game/**', 'src/render/**'],
                 rules: {
                     // 🚫 Spec §15 axis vocabulary (FallingObject.y) names properties, not variables
                     'id-length': ['error', { properties: 'never' }],
