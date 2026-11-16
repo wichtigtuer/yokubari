@@ -126,3 +126,28 @@ button:disabled {
 .hud-tokens {
     color: #d9c33f;
 }
+
+/* Phase screens: title, menu, pause, stage-clear, game-over */
+#screens {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+.screen-overlay {
+    padding: 24px 48px;
+    color: #e8e0d0;
+    font-family: monospace;
+    font-size: 28px;
+    text-align: center;
+    text-shadow: 0 2px 4px #000;
+    background: rgb(26 27 38 / 80%);
+    border: 2px solid #3a3d52;
+    border-radius: 8px;
+}
+
+.screen-overlay p {
+    margin: 8px 0;
+}

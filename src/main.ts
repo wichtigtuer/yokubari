@@ -11,6 +11,7 @@ import type { Shell } from './shell/session';
 import type { SwapAnimation } from './render/swap-animation';
 import { attachInput } from './input';
 import { dispatchCommand } from './shell/commands';
+import { renderScreens } from './screens';
 import { sessionSnapshot } from './shell/snapshot';
 import { syncBoardView } from './render/board-view';
 import { whenReady } from '@playcanvas/web-components';
@@ -19,7 +20,13 @@ import { whenReady } from '@playcanvas/web-components';
 const FIXED_DT = 1 / 60;
 
 /** The DOM and scene roots the renderer writes to. */
-type ViewRefs = Readonly<{ hud: HTMLElement; left: HTMLElement; right: HTMLElement; solo: HTMLElement }>;
+type ViewRefs = Readonly<{
+    hud: HTMLElement;
+    left: HTMLElement;
+    right: HTMLElement;
+    screens: HTMLElement;
+    solo: HTMLElement;
+}>;
 
 /** The board root the active session renders into (versus input drives the left board). */
 function activeRoot(shell: Shell, view: ViewRefs): HTMLElement {
@@ -99,17 +106,18 @@ function render(shell: Shell, view: ViewRefs): void {
         tween = advanceSwap(activeRoot(shell, view), tween.value);
         shell.swapLock = tween.type === 'some';
     }
+    renderScreens(view.screens, shell);
     shell.dirty = false;
 }
 
-/** The #hud overlay root, created if the page somehow lacks it. */
-function requireHud(): HTMLElement {
-    const existing = document.querySelector('#hud');
+/** The DOM overlay root with the given id, created if the page somehow lacks it. */
+function requireElement(id: string): HTMLElement {
+    const existing = document.querySelector(`#${id}`);
     if (existing instanceof HTMLElement) {
         return existing;
     }
     const created = document.createElement('div');
-    created.id = 'hud';
+    created.id = id;
     document.body.append(created);
     return created;
 }
@@ -128,12 +136,13 @@ const [solo, left, right] = await Promise.all([
     whenReady<EntityElement>('pc-entity[name="board-root-left"]'),
     whenReady<EntityElement>('pc-entity[name="board-root-right"]')
 ]);
-const hud = requireHud();
+const hud = requireElement('hud');
+const screens = requireElement('screens');
 
 // Test mode: ?test=1 on a dev server started with VITE_TEST_MODE=1 exposes window.__pcTestApi
 const testMode = new URLSearchParams(globalThis.location.search).get('test') === '1';
 const shell = createShell(selectSeed(testMode));
-const view: ViewRefs = { hud, left, right, solo };
+const view: ViewRefs = { hud, left, right, screens, solo };
 
 attachInput(globalThis.window, {
     onAction: (action) => {
