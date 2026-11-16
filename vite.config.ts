@@ -161,6 +161,19 @@ export default defineConfig({
                 }
             },
             {
+                files: ['src/input.ts', 'src/hud.ts', 'src/screens.ts'],
+                rules: {
+                    // 🚫 Shell modules: cohesive named exports, function declarations read better
+                    'func-style': 'off',
+                    'import/exports-last': 'off',
+                    'import/group-exports': 'off',
+                    'import/no-named-export': 'off',
+                    'import/prefer-default-export': 'off',
+                    // 🚫 DOM listener types (Window, KeyboardEvent) are mutable platform objects
+                    'typescript/prefer-readonly-parameter-types': 'off'
+                }
+            },
+            {
                 files: ['src/contracts/types.ts'],
                 rules: {
                     // 🚫 Spec §15 vocabulary: column/pair index unions are data, `y` names the vertical axis
