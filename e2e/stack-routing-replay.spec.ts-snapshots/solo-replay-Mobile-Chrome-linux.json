@@ -1,0 +1,64 @@
+{
+  "frameIndex": 1200,
+  "phase": "game-over",
+  "session": {
+    "kind": "solo",
+    "solo": {
+      "board": {
+        "columns": [
+          [
+            "m0",
+            "m0",
+            "m3",
+            "m2",
+            "m1",
+            "m0",
+            "m1",
+            "m0"
+          ],
+          [
+            "m0",
+            "m0",
+            "m1",
+            "base",
+            "m1",
+            "m3",
+            "m2"
+          ],
+          [
+            "base",
+            "m3",
+            "m0",
+            "m2",
+            "m0"
+          ],
+          [
+            "m2",
+            "m2",
+            "m0",
+            "m1",
+            "base",
+            "m3",
+            "base"
+          ]
+        ],
+        "fallAccumulator": 0,
+        "falling": [
+          {
+            "column": 1,
+            "id": 25,
+            "kind": "m0",
+            "y": 7.5
+          }
+        ],
+        "nextObjectId": 26,
+        "pending": []
+      },
+      "cursor": 0,
+      "hatched": 0,
+      "level": 1,
+      "score": 15,
+      "stage": 1
+    }
+  }
+}

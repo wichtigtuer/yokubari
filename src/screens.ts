@@ -61,8 +61,39 @@ export function screenFor(shell: Shell, phase: Phase): HTMLElement {
     return SCREENS[phase](shell);
 }
 
+/** The last key rendered into each root, so unchanged screens are not rebuilt every frame. */
+const rendered = new WeakMap<HTMLElement, string>();
+
+/** The versus token score for the key, or a marker when no match is running. */
+function tokensKey(shell: Shell): string {
+    if (shell.versus.type === 'none') {
+        return 'none';
+    }
+    const { tokens } = shell.versus.value;
+    return `${tokens.left}:${tokens.right}`;
+}
+
+/** Everything the overlay shows; a change in any part means the screen needs a rebuild. */
+function screenKey(shell: Shell): string {
+    return [
+        shell.app.phase,
+        shell.stage,
+        shell.score.score,
+        shell.playerChoice,
+        shell.menu.level,
+        shell.menu.mode,
+        shell.menu.speed,
+        tokensKey(shell)
+    ].join('|');
+}
+
 /** Renders the phase overlay into the screens root; empty while playing (render-only). */
 export function renderScreens(root: HTMLElement, shell: Shell): void {
+    const key = screenKey(shell);
+    if (rendered.get(root) === key) {
+        return;
+    }
+    rendered.set(root, key);
     if (shell.app.phase === 'playing') {
         root.replaceChildren();
         return;
