@@ -1,5 +1,5 @@
 import type { BoardState, FallingObject, StackItem } from '../contracts/types';
-import type { SideInput, VersusState } from './versus';
+import type { SideInput, VersusEvent, VersusState } from './versus';
 import { createVersus, startRound, tickVersus } from './versus';
 import { describe, expect, it } from 'vite-plus/test';
 import { GAME_CONFIG } from '../contracts/config';
@@ -45,6 +45,19 @@ const FULL_COLUMN: readonly StackItem[] = ['m0', 'm1', 'm2', 'm3', 'm0', 'm1', '
 /** Only the round-decision events of a tick. */
 const roundEvents = (events: readonly { type: string }[]): readonly unknown[] =>
     events.filter((event) => event.type === 'round-decided');
+
+/** Plays a match headlessly for the given number of lock-step ticks, collecting every event. */
+const runTicks = (ticks: number): { events: VersusEvent[]; state: VersusState } => {
+    let state = createVersus(GAME_CONFIG);
+    const events: VersusEvent[] = [];
+    const rngs = freshRngs();
+    for (let tick = 0; tick < ticks; tick += 1) {
+        const { events: tickEvents, state: nextState } = tickVersus(state, INPUTS, rngs, GAME_CONFIG);
+        state = nextState;
+        events.push(...tickEvents);
+    }
+    return { events, state };
+};
 
 /** Only the attack events of a tick; adjudication events are covered by the round tests. */
 const attackEvents = (events: readonly { type: string }[]): readonly unknown[] =>
@@ -197,5 +210,34 @@ describe('tickVersus simultaneous outcomes (spec §12.3)', () => {
         expect(roundEvents(events)).toEqual([{ outcome: { type: 'draw-overflow' }, type: 'round-decided' }]);
         expect(next.tokens).toEqual({ left: 0, right: 0 });
         expect(next.round).toBe(state.round);
+    });
+});
+
+describe('tickVersus match end and determinism (spec §12.3)', () => {
+    it('T26: reaching the token target fires match-decided and starts no new round', () => {
+        // Arrange: left one token from the match, about to clear the round
+        const clearing = versusWithLeft(boardWith([['base'], [], [], []], [fallingAt(1, 'base', 0)]));
+        const state: VersusState = { ...clearing, tokens: { left: 2, right: 0 } };
+
+        // Act
+        const { events, state: next } = tickVersus(state, INPUTS, freshRngs(), GAME_CONFIG);
+
+        // Assert
+        expect(events).toEqual([
+            { outcome: { side: 'left', type: 'cleared' }, type: 'round-decided' },
+            { type: 'match-decided', winner: 'left' }
+        ]);
+        expect(next.tokens).toEqual({ left: 3, right: 0 });
+        expect(next.round).toBe(state.round);
+    });
+
+    it('identical seeds and inputs produce identical states and event streams after 500 ticks', () => {
+        // Arrange / act
+        const first = runTicks(500);
+        const second = runTicks(500);
+
+        // Assert
+        expect(first.events).toEqual(second.events);
+        expect(first.state).toEqual(second.state);
     });
 });
