@@ -124,10 +124,14 @@ function requireElement(id: string): HTMLElement {
 
 /** A fixed seed in test mode keeps replays deterministic; real games seed from the clock. */
 function selectSeed(isTestMode: boolean): number {
-    if (isTestMode) {
+    if (!isTestMode) {
+        return Date.now();
+    }
+    const fromUrl = new URLSearchParams(globalThis.location.search).get('seed');
+    if (fromUrl === null) {
         return 1337;
     }
-    return Date.now();
+    return Number(fromUrl);
 }
 
 const appElement = await whenReady<AppElement>('pc-app');

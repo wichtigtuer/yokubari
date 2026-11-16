@@ -50,8 +50,9 @@ const { expect } = test;
  * Test-mode entry point: `?test=1` freezes the real-time clock and attaches
  * `window.__pcTestApi` (see `src/test-api.ts`).
  */
-const gotoTestMode = async (page: Page): Promise<void> => {
-    await page.goto('/?test=1');
+const gotoTestMode = async (page: Page, seed?: number): Promise<void> => {
+    const url = seed === undefined ? '/?test=1' : `/?test=1&seed=${seed}`;
+    await page.goto(url);
     await page.waitForFunction(() => Boolean(window.__pcTestApi));
 };
 

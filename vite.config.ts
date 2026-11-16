@@ -251,6 +251,8 @@ export default defineConfig({
                     'sort-imports': 'off',
                     'typescript/prefer-readonly-parameter-types': 'off',
                     'typescript/strict-boolean-expressions': 'off',
+                    // 🚫 toSorted is not in the project's TS lib target; spread+sort on a fresh copy
+                    'unicorn/no-array-sort': 'off',
                     // 🚫 JSON.stringify takes null as its replacer argument
                     'unicorn/no-null': 'off',
                     // 🚫 Page callbacks target the browser, where `window` reads naturally
