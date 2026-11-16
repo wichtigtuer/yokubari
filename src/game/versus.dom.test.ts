@@ -77,7 +77,7 @@ describe('startRound (spec §12.3)', () => {
 describe('tickVersus attacks (spec §12.3)', () => {
     it('T23: hatching an egg enclosing 3 monsters sends exactly 3 fixed attack objects to the right', () => {
         // Arrange: a cap landing on three monsters over a base
-        const state = versusWithLeft(boardWith([['m0', 'm1', 'm2', 'base'], [], [], []], [capAt(1, 0)]));
+        const state = versusWithLeft(boardWith([['base', 'm0', 'm1', 'm2'], [], [], []], [capAt(1, 0)]));
 
         // Act
         const { events, state: next } = tickVersus(state, INPUTS, freshRngs(), GAME_CONFIG);
@@ -91,7 +91,7 @@ describe('tickVersus attacks (spec §12.3)', () => {
 
     it('T23: identical seeds reproduce identical attack compositions', () => {
         // Arrange
-        const state = versusWithLeft(boardWith([['m0', 'm1', 'm2', 'base'], [], [], []], [capAt(1, 0)]));
+        const state = versusWithLeft(boardWith([['base', 'm0', 'm1', 'm2'], [], [], []], [capAt(1, 0)]));
 
         // Act
         const first = tickVersus(state, INPUTS, freshRngs(), GAME_CONFIG);
@@ -117,7 +117,7 @@ describe('tickVersus attacks (spec §12.3)', () => {
 describe('tickVersus multi-hatch attacks (spec §12.3)', () => {
     it('two hatches in one tick enqueue both attacks in hatch order', () => {
         // Arrange: two caps landing the same tick, the first enclosing 2, the second 1
-        const columns: readonly (readonly StackItem[])[] = [['m0', 'm1', 'base'], ['m2', 'base'], [], []];
+        const columns: readonly (readonly StackItem[])[] = [['base', 'm0', 'm1'], ['base', 'm2'], [], []];
         const state = versusWithLeft(boardWith(columns, [capAt(1, 0), capAt(2, 1)]));
 
         // Act
