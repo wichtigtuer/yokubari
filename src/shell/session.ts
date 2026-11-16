@@ -1,5 +1,5 @@
 import type { App, AppEvent } from '../game/phases';
-import type { BoardState, CursorPair, Progression } from '../contracts/types';
+import type { BoardState, CursorPair, ObjectId, Progression } from '../contracts/types';
 import { INITIAL_SCORE, applyTickEvents } from '../game/score';
 import type { SideInput, VersusEvent, VersusState } from '../game/versus';
 import { adjustMenuField, defaultMenuParams } from '../game/menu';
@@ -30,6 +30,7 @@ export type Shell = {
     board: BoardState;
     cursor: CursorPair;
     dirty: boolean;
+    lastSwap: Option<Readonly<{ carried: readonly ObjectId[]; pair: CursorPair }>>;
     menu: MenuParams;
     playerChoice: 1 | 2;
     progression: Progression;
@@ -38,6 +39,7 @@ export type Shell = {
     score: ScoreState;
     softDrop: boolean;
     stage: number;
+    swapLock: boolean;
     versus: Option<VersusState>;
 };
 
@@ -48,6 +50,7 @@ export function createShell(seed: number): Shell {
         board: createEmptyBoard(),
         cursor: INITIAL_CURSOR,
         dirty: true,
+        lastSwap: none(),
         menu: defaultMenuParams(GAME_CONFIG),
         playerChoice: 1,
         progression: initialProgression(1, GAME_CONFIG),
@@ -56,6 +59,7 @@ export function createShell(seed: number): Shell {
         score: INITIAL_SCORE,
         softDrop: false,
         stage: 1,
+        swapLock: false,
         versus: none()
     };
 }
@@ -234,18 +238,28 @@ function handleCursor(shell: Shell, direction: -1 | 1): void {
     }
 }
 
+/** The board the swap acts on: the versus left board (keyboard player) or the solo board. */
+function activeBoard(shell: Shell): BoardState {
+    if (shell.versus.type === 'some') {
+        return shell.versus.value.left.board;
+    }
+    return shell.board;
+}
+
 /** The swap button: exchanges the trays under the cursor of the running session (spec §6). */
 function handleSwap(shell: Shell): void {
-    if (shell.app.phase !== 'playing') {
+    if (shell.app.phase !== 'playing' || shell.swapLock) {
         return;
     }
+    const swapped = swapTrays(activeBoard(shell), shell.cursor, GAME_CONFIG);
     if (shell.versus.type === 'some') {
         const versus = shell.versus.value;
-        const swapped = swapTrays(versus.left.board, shell.cursor, GAME_CONFIG);
         shell.versus = some({ ...versus, left: { ...versus.left, board: swapped.board } });
-    } else {
-        shell.board = swapTrays(shell.board, shell.cursor, GAME_CONFIG).board;
     }
+    if (shell.versus.type === 'none') {
+        shell.board = swapped.board;
+    }
+    shell.lastSwap = some({ carried: swapped.carried, pair: shell.cursor });
     shell.dirty = true;
 }
 

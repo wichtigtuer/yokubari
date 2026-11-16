@@ -1,9 +1,13 @@
 import './starter.css';
 import type { AppElement, EntityElement } from '@playcanvas/web-components';
+import type { CursorPair, ObjectId, Phase } from './contracts/types';
+import { advanceSwap, beginSwap, captureOrigins, swapElementNames } from './render/swap-animation';
 import { createShell, dispatchAction, step } from './shell/session';
+import { none, some } from './utils/result';
 import { GAME_CONFIG } from './contracts/config';
-import type { Phase } from './contracts/types';
+import type { Option } from './utils/result';
 import type { Shell } from './shell/session';
+import type { SwapAnimation } from './render/swap-animation';
 import type { VersusState } from './game/versus';
 import { attachInput } from './input';
 import { dispatchCommand } from './shell/commands';
@@ -17,14 +21,58 @@ const FIXED_DT = 1 / 60;
 /** The DOM and scene roots the renderer writes to. */
 type ViewRefs = Readonly<{ hud: HTMLElement; left: HTMLElement; right: HTMLElement; solo: HTMLElement }>;
 
+/** The board root the active session renders into (versus input drives the left board). */
+function activeRoot(shell: Shell, view: ViewRefs): HTMLElement {
+    if (shell.versus.type === 'some') {
+        return view.left;
+    }
+    return view.solo;
+}
+
+/** Rebuilds the board entities of the active session from state. */
+function syncBoards(shell: Shell, view: ViewRefs): void {
+    if (shell.versus.type === 'some') {
+        syncBoardView(view.left, shell.versus.value.left.board, GAME_CONFIG);
+        syncBoardView(view.right, shell.versus.value.right.board, GAME_CONFIG);
+        return;
+    }
+    syncBoardView(view.solo, shell.board, GAME_CONFIG);
+}
+
+/** The running swap tween, if any; swaps are debounced while it runs. */
+let tween: Option<SwapAnimation> = none();
+
+/** Starts the swap tween around a board sync, and locks further swaps until it finishes. */
+function beginSwapTween(
+    shell: Shell,
+    view: ViewRefs,
+    swap: Readonly<{ carried: readonly ObjectId[]; pair: CursorPair }>
+): void {
+    const root = activeRoot(shell, view);
+    const origins = captureOrigins(root, swapElementNames(swap.pair, swap.carried, GAME_CONFIG.stackCapacity));
+    syncBoards(shell, view);
+    tween = some(beginSwap(root, origins));
+    shell.swapLock = true;
+    shell.lastSwap = none();
+}
+
+/** Syncs the boards, wrapping the sync in a swap tween when the last action was a swap. */
+function renderBoards(shell: Shell, view: ViewRefs): void {
+    const swap = shell.lastSwap;
+    if (swap.type === 'none') {
+        syncBoards(shell, view);
+        return;
+    }
+    beginSwapTween(shell, view, swap.value);
+}
+
 /** Shows the versus roots and syncs both boards; the HUD shows the match score. */
 function renderVersus(versus: VersusState, shell: Shell, view: ViewRefs): void {
     view.solo.setAttribute('enabled', 'false');
     view.left.setAttribute('enabled', 'true');
     view.right.setAttribute('enabled', 'true');
     if (shell.dirty) {
-        syncBoardView(view.left, versus.left.board, GAME_CONFIG);
-        syncBoardView(view.right, versus.right.board, GAME_CONFIG);
+        renderBoards(shell, view);
     }
     view.hud.textContent = `Round ${versus.round} — tokens ${versus.tokens.left} : ${versus.tokens.right}`;
 }
@@ -35,7 +83,7 @@ function renderSolo(shell: Shell, view: ViewRefs): void {
     view.left.setAttribute('enabled', 'false');
     view.right.setAttribute('enabled', 'false');
     if (shell.dirty) {
-        syncBoardView(view.solo, shell.board, GAME_CONFIG);
+        renderBoards(shell, view);
     }
     view.hud.textContent = `Score ${shell.score.score} — Level ${shell.progression.level} — Hatched ${shell.score.hatched}`;
 }
@@ -46,6 +94,10 @@ function render(shell: Shell, view: ViewRefs): void {
         renderVersus(shell.versus.value, shell, view);
     } else {
         renderSolo(shell, view);
+    }
+    if (tween.type === 'some') {
+        tween = advanceSwap(activeRoot(shell, view), tween.value);
+        shell.swapLock = tween.type === 'some';
     }
     shell.dirty = false;
 }
