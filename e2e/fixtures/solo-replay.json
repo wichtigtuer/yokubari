@@ -1,0 +1,16 @@
+{
+    "name": "solo-replay",
+    "steps": [
+        { "input": "start" },
+        { "input": "start" },
+        { "input": "start" },
+        { "input": "soft-drop-on" },
+        { "frames": 240 },
+        { "input": "cursor-left" },
+        { "input": "swap" },
+        { "frames": 480 },
+        { "input": "cursor-right" },
+        { "input": "swap" },
+        { "frames": 480 }
+    ]
+}

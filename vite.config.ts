@@ -145,6 +145,85 @@ export default defineConfig({
                 }
             },
             {
+                files: ['src/utils/**', 'src/contracts/**', 'src/game/**', 'src/render/**', 'src/shell/**'],
+                rules: {
+                    // 🚫 Pure library modules: many cohesive named exports, function declarations read better
+                    'func-style': 'off',
+                    'import/exports-last': 'off',
+                    'import/group-exports': 'off',
+                    'import/no-named-export': 'off',
+                    // 🚫 Layered modules import downward (contracts/game -> utils) without a package boundary
+                    'import/no-relative-parent-imports': 'off',
+                    // 🚫 Library modules grow named exports task by task; default exports would churn call sites
+                    'import/prefer-default-export': 'off',
+                    // 🚫 Immutable record updates idiomatically use object spread (prefer-object-spread stays on)
+                    'oxc/no-rest-spread-properties': 'off'
+                }
+            },
+            {
+                files: ['src/input.ts', 'src/hud.ts', 'src/screens.ts', 'src/main.ts', 'src/shell/**'],
+                rules: {
+                    // 🚫 Shell modules: cohesive named exports, function declarations read better
+                    'func-style': 'off',
+                    'import/exports-last': 'off',
+                    'import/group-exports': 'off',
+                    // 🚫 The composition root wires every core module together — that is its job
+                    'import/max-dependencies': 'off',
+                    'import/no-named-export': 'off',
+                    'import/prefer-default-export': 'off',
+                    // 🚫 The composition root wires fixed-step geometry constants
+                    'no-magic-numbers': 'off',
+                    // 🚫 DOM listener types (Window, KeyboardEvent) are mutable platform objects
+                    'typescript/prefer-readonly-parameter-types': 'off'
+                }
+            },
+            {
+                files: ['src/contracts/types.ts'],
+                rules: {
+                    // 🚫 Spec §15 vocabulary: column/pair index unions are data, `y` names the vertical axis
+                    'id-length': 'off',
+                    'no-magic-numbers': 'off',
+                    // 🚫 Branding constructors are the single, documented assertion point of the brand idiom
+                    'typescript/no-unsafe-type-assertion': 'off'
+                }
+            },
+            {
+                files: ['src/game/**', 'src/render/**', 'src/shell/**'],
+                rules: {
+                    // 🚫 Spec §15 axis vocabulary (FallingObject.y) names properties, not variables
+                    'id-length': ['error', { properties: 'never' }],
+                    // 🚫 Tick pipelines thread (state, context, rng, config) — arity is the design API
+                    'max-params': 'off',
+                    // 🚫 Board index arithmetic uses structural literals; domain numbers must come from GAME_CONFIG
+                    'no-magic-numbers': 'off',
+                    // 🚫 Readonly is declared on the types; the rule cannot see through branded intersections
+                    'typescript/prefer-readonly-parameter-types': 'off',
+                    // 🚫 Computed board indices (column.length - 1) are not expressible with .at()
+                    'unicorn/prefer-at': 'off'
+                }
+            },
+            {
+                files: ['src/utils/random.ts'],
+                rules: {
+                    // 🚫 PRNG mixing (mulberry32) is bitwise by definition
+                    'no-bitwise': 'off'
+                }
+            },
+            {
+                files: ['src/utils/pipe.ts'],
+                rules: {
+                    // 🚫 Variadic composition utility: one overload per arity is the point
+                    'max-params': 'off'
+                }
+            },
+            {
+                files: ['src/contracts/config.ts', 'src/contracts/config.dom.test.ts'],
+                rules: {
+                    // 🚫 The config module is a typed data table; literals are the content, not magic
+                    'no-magic-numbers': 'off'
+                }
+            },
+            {
                 files: ['**/e2e/**', 'playwright.config.ts'],
                 rules: {
                     // 🚫 Playwright fixtures and config lean on async helpers, named exports and env flags
@@ -172,6 +251,8 @@ export default defineConfig({
                     'sort-imports': 'off',
                     'typescript/prefer-readonly-parameter-types': 'off',
                     'typescript/strict-boolean-expressions': 'off',
+                    // 🚫 toSorted is not in the project's TS lib target; spread+sort on a fresh copy
+                    'unicorn/no-array-sort': 'off',
                     // 🚫 JSON.stringify takes null as its replacer argument
                     'unicorn/no-null': 'off',
                     // 🚫 Page callbacks target the browser, where `window` reads naturally
@@ -208,7 +289,9 @@ export default defineConfig({
                 rules: {
                     // 🚫 Fixtures and expectations read better as literals than named constants
                     'no-magic-numbers': 'off',
-                    'no-unused-expressions': 'off'
+                    'no-unused-expressions': 'off',
+                    // 🚫 Test callbacks assert on values; readonly-parameter contracts are an API concern
+                    'typescript/prefer-readonly-parameter-types': 'off'
                 }
             },
             {

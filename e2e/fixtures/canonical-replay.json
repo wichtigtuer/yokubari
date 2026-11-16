@@ -1,4 +1,0 @@
-{
-    "name": "canonical-replay",
-    "steps": [{ "frames": 60 }, { "input": "reverse" }, { "frames": 30 }, { "input": "reverse" }, { "frames": 90 }]
-}
