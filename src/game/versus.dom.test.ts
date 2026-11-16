@@ -37,6 +37,10 @@ const versusWithLeft = (board: BoardState): VersusState => {
     return { ...fresh, left: { ...fresh.left, board } };
 };
 
+/** Only the attack events of a tick; adjudication events are covered by the round tests. */
+const attackEvents = (events: readonly { type: string }[]): readonly unknown[] =>
+    events.filter((event) => event.type === 'attack-sent');
+
 describe('createVersus (spec §12.3)', () => {
     it('starts at round one with no tokens and two fresh empty sides', () => {
         // Arrange / act
@@ -83,7 +87,7 @@ describe('tickVersus attacks (spec §12.3)', () => {
         const { events, state: next } = tickVersus(state, INPUTS, freshRngs(), GAME_CONFIG);
 
         // Assert
-        expect(events).toEqual([{ count: 3, from: 'left', type: 'attack-sent' }]);
+        expect(attackEvents(events)).toEqual([{ count: 3, from: 'left', type: 'attack-sent' }]);
         expect(next.right.pendingAttack).toHaveLength(3);
         expect(next.right.pendingAttack.every((attack) => attack.kind.startsWith('m'))).toBe(true);
         expect(next.left.board.columns).toEqual([[], [], [], []]);
@@ -109,7 +113,7 @@ describe('tickVersus attacks (spec §12.3)', () => {
         const { events, state: next } = tickVersus(state, INPUTS, freshRngs(), GAME_CONFIG);
 
         // Assert
-        expect(events).toEqual([]);
+        expect(attackEvents(events)).toEqual([]);
         expect(next.right.pendingAttack).toEqual([]);
     });
 });
@@ -124,7 +128,7 @@ describe('tickVersus multi-hatch attacks (spec §12.3)', () => {
         const { events, state: next } = tickVersus(state, INPUTS, freshRngs(), GAME_CONFIG);
 
         // Assert
-        expect(events).toEqual([
+        expect(attackEvents(events)).toEqual([
             { count: 2, from: 'left', type: 'attack-sent' },
             { count: 1, from: 'left', type: 'attack-sent' }
         ]);
