@@ -3,12 +3,12 @@ import type { AppElement, EntityElement } from '@playcanvas/web-components';
 import type { CursorPair, ObjectId, Phase } from './contracts/types';
 import { advanceSwap, beginSwap, captureOrigins, swapElementNames } from './render/swap-animation';
 import { createShell, dispatchAction, step } from './shell/session';
+import { hudModel, renderHud } from './hud';
 import { none, some } from './utils/result';
 import { GAME_CONFIG } from './contracts/config';
 import type { Option } from './utils/result';
 import type { Shell } from './shell/session';
 import type { SwapAnimation } from './render/swap-animation';
-import type { VersusState } from './game/versus';
 import { attachInput } from './input';
 import { dispatchCommand } from './shell/commands';
 import { sessionSnapshot } from './shell/snapshot';
@@ -67,14 +67,14 @@ function renderBoards(shell: Shell, view: ViewRefs): void {
 }
 
 /** Shows the versus roots and syncs both boards; the HUD shows the match score. */
-function renderVersus(versus: VersusState, shell: Shell, view: ViewRefs): void {
+function renderVersus(shell: Shell, view: ViewRefs): void {
     view.solo.setAttribute('enabled', 'false');
     view.left.setAttribute('enabled', 'true');
     view.right.setAttribute('enabled', 'true');
     if (shell.dirty) {
         renderBoards(shell, view);
     }
-    view.hud.textContent = `Round ${versus.round} — tokens ${versus.tokens.left} : ${versus.tokens.right}`;
+    renderHud(view.hud, hudModel(shell));
 }
 
 /** Shows the solo root and syncs the board; the HUD shows score, level and hatched count. */
@@ -85,13 +85,13 @@ function renderSolo(shell: Shell, view: ViewRefs): void {
     if (shell.dirty) {
         renderBoards(shell, view);
     }
-    view.hud.textContent = `Score ${shell.score.score} — Level ${shell.progression.level} — Hatched ${shell.score.hatched}`;
+    renderHud(view.hud, hudModel(shell));
 }
 
 /** Syncs the rendered entities and the HUD text from the current state (read-only render). */
 function render(shell: Shell, view: ViewRefs): void {
     if (shell.versus.type === 'some') {
-        renderVersus(shell.versus.value, shell, view);
+        renderVersus(shell, view);
     } else {
         renderSolo(shell, view);
     }
