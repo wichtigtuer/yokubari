@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import type { TestState } from '../src/test-api';
+import type { GameStateSnapshot } from '../src/test-api';
 import type { ReplayFixture } from './replay-fixture';
 import { test as baseTest } from '@playwright/test';
 import { promises as fs, writeFileSync } from 'node:fs';
@@ -56,7 +56,7 @@ const gotoTestMode = async (page: Page): Promise<void> => {
 };
 
 /** Advance the simulation by `frames` logical ticks on the manual clock. */
-const stepFrames = async (page: Page, frames: number): Promise<TestState> => {
+const stepFrames = async (page: Page, frames: number): Promise<GameStateSnapshot> => {
     const state = await page.evaluate((count) => window.__pcTestApi?.stepFrames(count), frames);
     if (!state) {
         throw new Error('__pcTestApi is not attached; call gotoTestMode(page) first');
@@ -65,7 +65,7 @@ const stepFrames = async (page: Page, frames: number): Promise<TestState> => {
 };
 
 /** Normalise and apply a raw input string through the test API. */
-const dispatchInput = async (page: Page, input: string): Promise<TestState> => {
+const dispatchInput = async (page: Page, input: string): Promise<GameStateSnapshot> => {
     const state = await page.evaluate((action) => window.__pcTestApi?.dispatchInput(action), input);
     if (!state) {
         throw new Error('__pcTestApi is not attached; call gotoTestMode(page) first');
@@ -74,7 +74,7 @@ const dispatchInput = async (page: Page, input: string): Promise<TestState> => {
 };
 
 /** Read a clone of the current test state. */
-const getState = async (page: Page): Promise<TestState> => {
+const getState = async (page: Page): Promise<GameStateSnapshot> => {
     const state = await page.evaluate(() => window.__pcTestApi?.getState());
     if (!state) {
         throw new Error('__pcTestApi is not attached; call gotoTestMode(page) first');
@@ -88,7 +88,7 @@ const freezeForSnapshot = async (page: Page): Promise<void> => {
 };
 
 /** Enter test mode and feed a replay fixture's input/tick steps through the manual clock. */
-const runReplay = async (page: Page, fixture: ReplayFixture): Promise<TestState> => {
+const runReplay = async (page: Page, fixture: ReplayFixture): Promise<GameStateSnapshot> => {
     await gotoTestMode(page);
     for (const step of fixture.steps) {
         if (step.input !== undefined) {

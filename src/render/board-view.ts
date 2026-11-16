@@ -15,16 +15,6 @@ const CELL_WIDTH = 1.2;
 const CELL_HEIGHT = 0.55;
 const ITEM_SCALE = 0.5;
 
-/** The CSS color each object kind renders in. */
-export const KIND_COLORS: Readonly<Record<Falling, string>> = {
-    base: '#e8e0d0',
-    cap: '#f4a460',
-    m0: '#e0483e',
-    m1: '#3e7de0',
-    m2: '#46b04a',
-    m3: '#d9c33f'
-};
-
 /** The world x of a column's center; the middle of the board sits at x = 0. */
 export function columnX(column: number, config: GameConfig): number {
     return (column - (config.columns - 1) / 2) * CELL_WIDTH;
@@ -56,13 +46,16 @@ export function fallingPlacements(board: BoardState, config: GameConfig): Fallin
     }));
 }
 
-/** A colored box render element for one object kind. */
+/** The id of the shared app-level material each object kind renders with. */
+export function kindMaterialId(kind: Falling): string {
+    return `mat-${kind}`;
+}
+
+/** A colored box render element for one object kind, referencing the shared material by id. */
 function boxRender(kind: Falling): HTMLElement {
     const render = document.createElement('pc-render');
     render.setAttribute('type', 'box');
-    const material = document.createElement('pc-material');
-    material.setAttribute('diffuse', KIND_COLORS[kind]);
-    render.append(material);
+    render.setAttribute('material', kindMaterialId(kind));
     return render;
 }
 

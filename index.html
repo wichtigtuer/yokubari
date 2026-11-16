@@ -4,25 +4,53 @@
         <meta charset="UTF-8" />
         <link rel="icon" type="image/png" href="/src/assets/playcanvas.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PlayCanvas + Web Components</title>
+        <title>Stack Routing Puzzle</title>
     </head>
     <body>
         <pc-app>
+            <!-- Shared materials; render components reference them by id -->
+            <pc-material id="mat-m0" diffuse="#e0483e"></pc-material>
+            <pc-material id="mat-m1" diffuse="#3e7de0"></pc-material>
+            <pc-material id="mat-m2" diffuse="#46b04a"></pc-material>
+            <pc-material id="mat-m3" diffuse="#d9c33f"></pc-material>
+            <pc-material id="mat-base" diffuse="#e8e0d0"></pc-material>
+            <pc-material id="mat-cap" diffuse="#f4a460"></pc-material>
+            <pc-material id="mat-tray" diffuse="#3a3d52"></pc-material>
+
             <pc-scene>
-                <pc-entity name="camera" position="0 0 3">
-                    <pc-camera clear-color="#8099e6"></pc-camera>
+                <pc-entity name="camera" position="0 2.6 9.5" rotation="-8 0 0">
+                    <pc-camera clear-color="#1a1b26"></pc-camera>
                 </pc-entity>
 
-                <pc-entity name="light" rotation="45 0 0">
-                    <pc-light></pc-light>
+                <pc-entity name="light" rotation="45 30 0">
+                    <pc-light type="directional"></pc-light>
                 </pc-entity>
 
-                <!-- The rotate script is attached in src/main.ts -->
-                <pc-entity name="cube">
-                    <pc-render type="box"></pc-render>
+                <!-- Static tray platforms; dynamic stack/falling entities sync under the roots -->
+                <pc-entity name="trays-solo">
+                    <pc-entity name="tray-0" position="-1.8 -0.06 0" scale="1.05 0.12 1">
+                        <pc-render type="box" material="mat-tray"></pc-render>
+                    </pc-entity>
+                    <pc-entity name="tray-1" position="-0.6 -0.06 0" scale="1.05 0.12 1">
+                        <pc-render type="box" material="mat-tray"></pc-render>
+                    </pc-entity>
+                    <pc-entity name="tray-2" position="0.6 -0.06 0" scale="1.05 0.12 1">
+                        <pc-render type="box" material="mat-tray"></pc-render>
+                    </pc-entity>
+                    <pc-entity name="tray-3" position="1.8 -0.06 0" scale="1.05 0.12 1">
+                        <pc-render type="box" material="mat-tray"></pc-render>
+                    </pc-entity>
                 </pc-entity>
+
+                <pc-entity name="board-root-solo"></pc-entity>
+                <pc-entity name="board-root-left" position="-2.9 0 0" enabled="false"></pc-entity>
+                <pc-entity name="board-root-right" position="2.9 0 0" enabled="false"></pc-entity>
             </pc-scene>
         </pc-app>
+
+        <!-- HUD and phase screens are DOM overlays, driven by src/hud.ts and src/screens.ts -->
+        <div id="hud"></div>
+        <div id="screens"></div>
 
         <script type="module" src="/src/main.ts"></script>
     </body>

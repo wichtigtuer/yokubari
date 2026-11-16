@@ -145,7 +145,7 @@ export default defineConfig({
                 }
             },
             {
-                files: ['src/utils/**', 'src/contracts/**', 'src/game/**', 'src/render/**'],
+                files: ['src/utils/**', 'src/contracts/**', 'src/game/**', 'src/render/**', 'src/shell/**'],
                 rules: {
                     // 🚫 Pure library modules: many cohesive named exports, function declarations read better
                     'func-style': 'off',
@@ -161,14 +161,18 @@ export default defineConfig({
                 }
             },
             {
-                files: ['src/input.ts', 'src/hud.ts', 'src/screens.ts'],
+                files: ['src/input.ts', 'src/hud.ts', 'src/screens.ts', 'src/main.ts', 'src/shell/**'],
                 rules: {
                     // 🚫 Shell modules: cohesive named exports, function declarations read better
                     'func-style': 'off',
                     'import/exports-last': 'off',
                     'import/group-exports': 'off',
+                    // 🚫 The composition root wires every core module together — that is its job
+                    'import/max-dependencies': 'off',
                     'import/no-named-export': 'off',
                     'import/prefer-default-export': 'off',
+                    // 🚫 The composition root wires fixed-step geometry constants
+                    'no-magic-numbers': 'off',
                     // 🚫 DOM listener types (Window, KeyboardEvent) are mutable platform objects
                     'typescript/prefer-readonly-parameter-types': 'off'
                 }
@@ -184,7 +188,7 @@ export default defineConfig({
                 }
             },
             {
-                files: ['src/game/**', 'src/render/**'],
+                files: ['src/game/**', 'src/render/**', 'src/shell/**'],
                 rules: {
                     // 🚫 Spec §15 axis vocabulary (FallingObject.y) names properties, not variables
                     'id-length': ['error', { properties: 'never' }],
